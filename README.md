@@ -1,6 +1,6 @@
 # pi_segunda_entrega
 
-A new Flutter project.
+Projeto Integrador, 4º semestre Senac EAD
 
 ## Getting Started
 
