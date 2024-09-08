@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'esqueceu_senha.dart'; // Certifique-se de que o arquivo está no caminho correto
+import 'esqueceu_senha.dart'; 
 
 void main() {
   runApp(MyApp());
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LoginScreen(), // Use o LoginScreen como tela inicial
+      home: LoginScreen(), //nome da tela de login definida como tela inicial
     );
   }
 }
