@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'esqueceu_senha.dart';
 
 void main() {
   runApp( MyApp());
@@ -18,7 +19,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: const Color.fromARGB(255, 208, 241, 209),
+        backgroundColor: const Color.fromARGB(255, 178, 214, 180),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -30,6 +31,7 @@ class _MyAppState extends State<MyApp> {
               fontWeight: FontWeight.bold,
             ),),
 
+            //Email
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 30),
               child: Form(child: 
@@ -53,11 +55,13 @@ class _MyAppState extends State<MyApp> {
                       },
                     ),
                   ),
-              
+
+                  //Espaçamento
                   SizedBox(
                     height: 30,
                   ),
-              
+
+                  //Caixa de senha
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50),
                     child: TextFormField(
@@ -77,10 +81,12 @@ class _MyAppState extends State<MyApp> {
                     ),
                   ),
 
+                  //espaçamento
                   SizedBox(
                     height: 30,
                   ),
 
+                  //Botão para confirmar a entrada no sistema
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 100),
                     child: MaterialButton(
@@ -89,8 +95,21 @@ class _MyAppState extends State<MyApp> {
                       color: const Color.fromARGB(255, 81, 177, 84),
                       textColor: Colors.white,
                       child: Text('Entrar'),
-                    
-                      ),
+                      )
+                  ),
+                  //Espaçamento
+                  SizedBox(height: 20),
+
+                  //Esqueceu a senha?
+                  TextButton(
+                    onPressed: () {
+                      //Navegador
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SegundaTela()),
+                        );
+                    },
+                    child: Text('Esqueceu sua senha?'),
                   ),
                 ],
               )
