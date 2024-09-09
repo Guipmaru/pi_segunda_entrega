@@ -2,12 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'esqueceu_senha.dart'; 
+import 'iniciando_a_homepage.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -16,7 +18,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
+//construção da scaffold 
 class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,6 +37,9 @@ class LoginScreen extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+
+
+          //Campo para email
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 30),
             child: Form(
@@ -50,7 +57,11 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+
+                  //Espaço entre componentes
                   SizedBox(height: 30),
+
+                  //Campo para senha
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50),
                     child: TextFormField(
@@ -63,19 +74,32 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+
+                  //Espaço entre componentes
                   SizedBox(height: 30),
+
+                  //Botão para confirmar login
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 100),
                     child: MaterialButton(
                       minWidth: double.infinity,
-                      onPressed: () {},
+                      onPressed: () {
+                        //Navega para homepage
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: 
+                          (context)=> Homepage())
+                          );
+                      },
                       color: const Color.fromARGB(255, 81, 177, 84),
                       textColor: Colors.white,
                       child: Text('Entrar'),
                     ),
                   ),
                   SizedBox(height: 20),
-                  // Navegação para a Segunda Tela
+               
+
+                  //Texto clicável para ir para outra tela
                   TextButton(
                     onPressed: () {
                       // Navega para a SegundaTela (Esqueceu a Senha)
@@ -88,6 +112,8 @@ class LoginScreen extends StatelessWidget {
                     },
                     child: Text('Esqueceu sua senha?'),
                   ),
+
+
                 ],
               ),
             ),
