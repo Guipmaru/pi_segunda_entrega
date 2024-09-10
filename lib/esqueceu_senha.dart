@@ -6,6 +6,7 @@ class SegundaTela extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 208, 241, 209),
       appBar: AppBar(
         title: const Text('Esqueceu sua senha?'),
       ),
