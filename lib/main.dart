@@ -5,14 +5,14 @@ import 'package:pi_segunda_entrega/data/database_helper.dart';
 import 'cadastro_aluno.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       //nome da tela de login definida como tela inicial
       home: LoginScreen(), 
     );
@@ -40,23 +40,25 @@ class _LoginScreenState extends State<LoginScreen> {
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    if (_formKey.currentState!.validate()) {
-      // Verifica as credenciais no banco de dados
-      var user = await DatabaseHelper().getUser(email, password);
+      if (_formKey.currentState!.validate()) {
+        // Verifica as credenciais no banco de dados
+        var user = await DatabaseHelper().getUser(email, password);
 
-      if (user != null) {
-        // Usuário encontrado, navega para a homepage
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Homepage()),
-        );
-      } else {
-        // Usuário ou senha incorretos, exibe a mensagem de erro
-        setState(() {
-          _errorMessage = 'Usuário ou senha incorretos';
-        });
+        if (!mounted) return;  // Verifica se o widget ainda está montado antes de usar o contexto
+
+        if (user != null) {
+          // Usuário encontrado, navega para a homepage
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Homepage()),
+          );
+        } else {
+          // Usuário ou senha incorretos, exibe a mensagem de erro
+          setState(() {
+            _errorMessage = 'Usuário ou senha incorretos';
+          });
+        }
       }
-    }
   }
 
   void _clearError() {
@@ -78,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
+          const Text(
             'Login',
             style: TextStyle(
               fontSize: 35,
@@ -99,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Email',
                         //texto que indica para digitar email
                         hintText: 'Digite seu Email',
@@ -119,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
 
                   //Espaço entre componentes
-                  SizedBox(height: 30),
+                  const SizedBox(height: 30),
 
                   //Campo para senha
                   Padding(
@@ -128,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: _passwordController,
                       // Para ocultar a senha
                       obscureText: true, 
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Senha',
                         hintText: 'Digite sua senha',
                         prefixIcon: Icon(Icons.password),
@@ -147,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
 
                   //Espaço entre componentes
-                  SizedBox(height: 30),
+                  const SizedBox(height: 30),
 
                   // Exibe mensagem de erro se houver
                   if (_errorMessage.isNotEmpty)
@@ -157,11 +159,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           Text(
                             _errorMessage,
-                            style: TextStyle(color: Colors.red, fontSize: 16),
+                            style: const TextStyle(color: Colors.red, fontSize: 16),
                           ),
                           ElevatedButton(
                             onPressed: _clearError,
-                            child: Text('OK'),
+                            child: const Text('OK'),
                           ),
                         ],
                       ),
@@ -175,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: _login, 
                       color: const Color.fromARGB(255, 81, 177, 84),
                       textColor: Colors.white,
-                      child: Text('Entrar'),
+                      child: const Text('Entrar'),
                     ),
                   ),
 
@@ -190,15 +192,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             context,
                             MaterialPageRoute(
                               // tela de Esqueceu sua senha?
-                              builder: (context) => SegundaTela(), 
+                              builder: (context) => const SegundaTela(), 
                             ),
                           );
                         },
-                        child: Text('Esqueceu sua senha?'),
+                        child: const Text('Esqueceu sua senha?'),
                       ),
                       
                       // Espaço entre os textos
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
 
                       // Texto "Cadastre-se"
                       TextButton(
@@ -207,11 +209,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             context,
                             MaterialPageRoute(
                               // tela de cadastro
-                              builder: (context) => CadastroAluno(), 
+                              builder: (context) => const CadastroAluno(), 
                             ),
                           );
                         },
-                        child: Text(
+                        child: const Text(
                           'Cadastre-se',
                           style: TextStyle(color: Color.fromARGB(255, 81, 177, 84)), 
                         ),

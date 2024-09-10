@@ -5,10 +5,11 @@ class CadastroAluno extends StatefulWidget {
   const CadastroAluno({super.key});
 
   @override
-  _CadastroAlunoState createState() => _CadastroAlunoState();
+  CadastroAlunoState createState() => CadastroAlunoState();
 }
-//controles para entradas de dados
-class _CadastroAlunoState extends State<CadastroAluno> {
+
+// Controles para entradas de dados
+class CadastroAlunoState extends State<CadastroAluno> {
   final _formKey = GlobalKey<FormState>();
   final _nomeController = TextEditingController();
   final _sobrenomeController = TextEditingController();
@@ -32,8 +33,8 @@ class _CadastroAlunoState extends State<CadastroAluno> {
           child: ListView(
             children: [
               // Campo Nome
-              Text('Nome', style: TextStyle(fontSize: 18)),
-              SizedBox(height: 10),
+              const Text('Nome', style: TextStyle(fontSize: 18)),
+              const SizedBox(height: 10),
               TextFormField(
                 controller: _nomeController,
                 decoration: InputDecoration(
@@ -51,11 +52,11 @@ class _CadastroAlunoState extends State<CadastroAluno> {
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               // Campo Sobrenome
-              Text('Sobrenome', style: TextStyle(fontSize: 18)),
-              SizedBox(height: 10),
+              const Text('Sobrenome', style: TextStyle(fontSize: 18)),
+              const SizedBox(height: 10),
               TextFormField(
                 controller: _sobrenomeController,
                 decoration: InputDecoration(
@@ -73,11 +74,11 @@ class _CadastroAlunoState extends State<CadastroAluno> {
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               // Campo Email
-              Text('Email', style: TextStyle(fontSize: 18)),
-              SizedBox(height: 10),
+              const Text('Email', style: TextStyle(fontSize: 18)),
+              const SizedBox(height: 10),
               TextFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
@@ -96,11 +97,11 @@ class _CadastroAlunoState extends State<CadastroAluno> {
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               // Campo Senha
-              Text('Senha', style: TextStyle(fontSize: 18)),
-              SizedBox(height: 10),
+              const Text('Senha', style: TextStyle(fontSize: 18)),
+              const SizedBox(height: 10),
               TextFormField(
                 controller: _senhaController,
                 obscureText: true,
@@ -119,11 +120,11 @@ class _CadastroAlunoState extends State<CadastroAluno> {
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               // Campo Confirmar Senha
-              Text('Confirme sua senha', style: TextStyle(fontSize: 18)),
-              SizedBox(height: 10),
+              const Text('Confirme sua senha', style: TextStyle(fontSize: 18)),
+              const SizedBox(height: 10),
               TextFormField(
                 controller: _confirmarSenhaController,
                 obscureText: true,
@@ -142,14 +143,14 @@ class _CadastroAlunoState extends State<CadastroAluno> {
                   return null;
                 },
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
 
               // Botão de Cadastrar
               MaterialButton(
                 minWidth: double.infinity,
                 color: const Color.fromARGB(255, 81, 177, 84),
                 textColor: Colors.white,
-                child: Text('Cadastrar'),
+                child: const Text('Cadastrar'),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     // Insere o usuário no banco de dados
@@ -160,9 +161,12 @@ class _CadastroAlunoState extends State<CadastroAluno> {
                       _senhaController.text,
                     );
 
-                    // Mostra mensagem de sucesso
+                    // Verifica se o widget ainda está montado antes de usar o BuildContext
+                    if (!mounted) return;
+
+                    // Mostra mensagem de sucesso e atrasa a navegação
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Cadastro realizado com sucesso!')),
+                      const SnackBar(content: Text('Cadastro realizado com sucesso!')),
                     );
 
                     // Limpa os campos após o cadastro
@@ -171,11 +175,13 @@ class _CadastroAlunoState extends State<CadastroAluno> {
                     _emailController.clear();
                     _senhaController.clear();
                     _confirmarSenhaController.clear();
-                    
+
+                    // Atraso para garantir que o SnackBar seja mostrado antes da navegação
+                    await Future.delayed(const Duration(seconds: 2));
                     // Volta para a tela de login
                     Navigator.pop(context);
                   }
-                },
+                }
               ),
             ],
           ),
