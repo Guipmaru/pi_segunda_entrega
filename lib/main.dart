@@ -1,8 +1,8 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'esqueceu_senha.dart'; 
 import 'iniciando_a_homepage.dart';
+import 'package:pi_segunda_entrega/data/database_helper.dart'; // Importa o DatabaseHelper para interação com o banco de dados
+import 'cadastro_aluno.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,9 +18,50 @@ class MyApp extends StatelessWidget {
   }
 }
 
-//construção da scaffold 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _emailController = TextEditingController(); // Controlador para o campo de email
+  final _passwordController = TextEditingController(); // Controlador para o campo de senha
+  final _formKey = GlobalKey<FormState>(); // Chave para o formulário
+  String _errorMessage = ''; // Armazena a mensagem de erro
+
+  Future<void> _login() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    if (_formKey.currentState!.validate()) {
+      // Verifica as credenciais no banco de dados
+      var user = await DatabaseHelper().getUser(email, password);
+
+      if (user != null) {
+        // Usuário encontrado, navega para a homepage
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Homepage()),
+        );
+      } else {
+        // Usuário ou senha incorretos, exibe a mensagem de erro
+        setState(() {
+          _errorMessage = 'Usuário ou senha incorretos';
+        });
+      }
+    }
+  }
+
+  void _clearError() {
+    setState(() {
+      _errorMessage = ''; // Limpa a mensagem de erro
+      _emailController.clear(); // Limpa o campo de email
+      _passwordController.clear(); // Limpa o campo de senha
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,16 +79,17 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
 
-
           //Campo para email
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 30),
             child: Form(
+              key: _formKey,
               child: Column(
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50),
                     child: TextFormField(
+                      controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         labelText: 'Email',
@@ -55,6 +97,12 @@ class LoginScreen extends StatelessWidget {
                         prefixIcon: Icon(Icons.email),
                         border: OutlineInputBorder(),
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor, insira o email';
+                        }
+                        return null;
+                      },
                     ),
                   ),
 
@@ -65,55 +113,93 @@ class LoginScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50),
                     child: TextFormField(
-                      keyboardType: TextInputType.visiblePassword,
+                      controller: _passwordController,
+                      obscureText: true, // Para ocultar a senha
                       decoration: InputDecoration(
                         labelText: 'Senha',
                         hintText: 'Digite sua senha',
                         prefixIcon: Icon(Icons.password),
                         border: OutlineInputBorder(),
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor, insira a senha';
+                        }
+                        return null;
+                      },
                     ),
                   ),
 
                   //Espaço entre componentes
                   SizedBox(height: 30),
 
+                  // Exibe mensagem de erro se houver
+                  if (_errorMessage.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Column(
+                        children: [
+                          Text(
+                            _errorMessage,
+                            style: TextStyle(color: Colors.red, fontSize: 16),
+                          ),
+                          ElevatedButton(
+                            onPressed: _clearError,
+                            child: Text('OK'),
+                          ),
+                        ],
+                      ),
+                    ),
+
                   //Botão para confirmar login
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 100),
                     child: MaterialButton(
                       minWidth: double.infinity,
-                      onPressed: () {
-                        //Navega para homepage
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: 
-                          (context)=> Homepage())
-                          );
-                      },
+                      onPressed: _login, // Chama o método de login
                       color: const Color.fromARGB(255, 81, 177, 84),
                       textColor: Colors.white,
                       child: Text('Entrar'),
                     ),
                   ),
-                  SizedBox(height: 20),
-               
 
                   //Texto clicável para ir para outra tela
-                  TextButton(
-                    onPressed: () {
-                      // Navega para a SegundaTela (Esqueceu a Senha)
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SegundaTela(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Texto "Esqueceu sua senha?"
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SegundaTela(), // tela de "Esqueceu sua senha?"
+                            ),
+                          );
+                        },
+                        child: Text('Esqueceu sua senha?'),
+                      ),
+                      
+                      // Espaço entre os textos
+                      SizedBox(width: 10),
+
+                      // Texto "Cadastre-se"
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CadastroAluno(), // tela de cadastro
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Cadastre-se',
+                          style: TextStyle(color: Color.fromARGB(255, 81, 177, 84)), // cor do botão "Entrar"
                         ),
-                      );
-                    },
-                    child: Text('Esqueceu sua senha?'),
+                      ),
+                    ],
                   ),
-
-
                 ],
               ),
             ),
