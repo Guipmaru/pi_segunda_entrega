@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'esqueceu_senha.dart'; 
 import 'iniciando_a_homepage.dart';
-import 'package:pi_segunda_entrega/data/database_helper.dart'; // Importa o DatabaseHelper para interação com o banco de dados
+import 'package:pi_segunda_entrega/data/database_helper.dart'; 
 import 'cadastro_aluno.dart';
 
 void main() {
@@ -13,7 +13,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LoginScreen(), //nome da tela de login definida como tela inicial
+      //nome da tela de login definida como tela inicial
+      home: LoginScreen(), 
     );
   }
 }
@@ -26,10 +27,14 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController(); // Controlador para o campo de email
-  final _passwordController = TextEditingController(); // Controlador para o campo de senha
-  final _formKey = GlobalKey<FormState>(); // Chave para o formulário
-  String _errorMessage = ''; // Armazena a mensagem de erro
+  // Controlador para o campo de email
+  final _emailController = TextEditingController(); 
+  // Controlador para o campo de senha
+  final _passwordController = TextEditingController(); 
+  // Chave para o formulário
+  final _formKey = GlobalKey<FormState>(); 
+  // Armazena a mensagem de erro
+  String _errorMessage = ''; 
 
   Future<void> _login() async {
     String email = _emailController.text;
@@ -56,9 +61,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _clearError() {
     setState(() {
-      _errorMessage = ''; // Limpa a mensagem de erro
-      _emailController.clear(); // Limpa o campo de email
-      _passwordController.clear(); // Limpa o campo de senha
+      // Limpa a mensagem de erro
+      _errorMessage = ''; 
+      // Limpa o campo de email
+      _emailController.clear(); 
+      // Limpa o campo de senha
+      _passwordController.clear(); 
     });
   }
 
@@ -93,9 +101,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         labelText: 'Email',
+                        //texto que indica para digitar email
                         hintText: 'Digite seu Email',
                         prefixIcon: Icon(Icons.email),
                         border: OutlineInputBorder(),
+
+                        filled: true,
+                        fillColor: Colors.white,
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -114,12 +126,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 50),
                     child: TextFormField(
                       controller: _passwordController,
-                      obscureText: true, // Para ocultar a senha
+                      // Para ocultar a senha
+                      obscureText: true, 
                       decoration: InputDecoration(
                         labelText: 'Senha',
                         hintText: 'Digite sua senha',
                         prefixIcon: Icon(Icons.password),
                         border: OutlineInputBorder(),
+
+                        filled: true,
+                        fillColor: Colors.white,
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -156,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 100),
                     child: MaterialButton(
                       minWidth: double.infinity,
-                      onPressed: _login, // Chama o método de login
+                      onPressed: _login, 
                       color: const Color.fromARGB(255, 81, 177, 84),
                       textColor: Colors.white,
                       child: Text('Entrar'),
@@ -173,7 +189,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SegundaTela(), // tela de "Esqueceu sua senha?"
+                              // tela de Esqueceu sua senha?
+                              builder: (context) => SegundaTela(), 
                             ),
                           );
                         },
@@ -189,13 +206,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CadastroAluno(), // tela de cadastro
+                              // tela de cadastro
+                              builder: (context) => CadastroAluno(), 
                             ),
                           );
                         },
                         child: Text(
                           'Cadastre-se',
-                          style: TextStyle(color: Color.fromARGB(255, 81, 177, 84)), // cor do botão "Entrar"
+                          style: TextStyle(color: Color.fromARGB(255, 81, 177, 84)), 
                         ),
                       ),
                     ],
