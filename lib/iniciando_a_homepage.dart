@@ -1,85 +1,115 @@
 import 'package:flutter/material.dart';
+import 'package:pi_segunda_entrega/data/database_helper.dart';
 
-class Homepage extends StatelessWidget{
+class Homepage extends StatefulWidget{
   const Homepage({super.key});
 
   @override
+  HomepageState createState() => HomepageState();
+}
+  
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: (){
-            Navigator.pop(context);
-          }, 
-        ),
+        backgroundColor: const Color.fromARGB(255, 208, 241, 209),
+        body: Column(
+           mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+        )
         title: const Text(
-          'Voltar',
-          style: TextStyle()
+          'Como é bom te ver aqui,'
+          style: TextStyle(
+            fontSize: 35,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+          ), // título da homepage
         ),
-      ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
+
+         Padding(
+          padding: const EdgeInsets.symetric(horizontal: 100),
+          child: Text(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: const [
             Text('Registro da sua última doação: 15/12/2023'),
             SizedBox(height: 10),
             Text('Próxima doação prevista: [data da próxima doação'),
             SizedBox(height: 10),
             Text('O que deseja fazer hoje?'),
-          ],
+          ], //informações do paciente e texto para o menu de botões
         ),
       ),
-        bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ElevatedButton(
+
+           Padding(
+            padding: const EdgeInsets.symetric(horizontal: 150),
+            child: MaterialButton(
+            mainAnxisAlignment: MainAxisAlignment.center,
+            color: const Color.fromARGB(255, 81, 177, 84),
+            textColor: Colors.white,
+            child: const Text('Atualizar meus Dados para doação de sangue'),
               onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'Atualizar meus dados para doação de sangue',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'Agendar minha doação de sangue',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'Trocar o agendamento da doação de sangue',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'Buscar pontos de doação de sangue',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
+               Navigator.push(
+                context,
+               MaterialPageRoute(
+                builder: (context) => TelaFormulario(), // inserir a tela correta
+              ), // botão de atualizar os dados para a doação de sangue
+            );
+          },
         ),
       ),
-    );
-  }
-}
+            Padding(
+             padding: const EdgeInsets.symetric(horizontal: 150),
+             child: MaterialButton(
+             mainAnxisAlignment: MainAxisAlignment.center,
+             color: const Color.fromARGB(255, 81, 177, 84),
+             textColor: Colors.white,
+             child: const Text('Agendar minha doação de sangue'),
+               onPressed: () {
+                Navigator.push(
+                 context,
+                MaterialPageRoute(
+                 builder: (context) => TelaAgendamento(), // inserir a tela correta
+              ), // botão para agendamento da doação
+            );
+          },
+        ),
+      ),
+
+            Padding(
+             padding: const EdgeInsets.symetric(horizontal: 150),
+             child: MaterialButton(
+             mainAnxisAlignment: MainAxisAlignment.center,
+             color: const Color.fromARGB(255, 81, 177, 84),
+             textColor: Colors.white,
+             child: const Text('Trocar o agendamento da doação de sangue'),
+              onPressed: () {
+               Navigator.push(
+                context,
+               MaterialPageRoute(
+                builder: (context) => TelaTrocadeAgendamento(), // inserir a tela correta
+              ), // botão de trocar agendamento da doação de sangue
+            );
+          },
+        ),
+      ),
+
+            Padding(
+             padding: const EdgeInsets.symetric(horizontal: 150),
+             child: MaterialButton(
+             mainAnxisAlignment: MainAxisAlignment.center,
+             color: const Color.fromARGB(255, 81, 177, 84),
+             textColor: Colors.white,
+             child: const Text('Buscar pontos para doação de sangue'),
+              onPressed: () {
+               Navigator.push(
+                context,
+               MaterialPageRoute(
+                builder: (context) => TelaFormulario(), // inserir a tela correta
+              ), // botão para mostrar os pontos de doações
+            );
+          },
+        ),
+      ),
 
 void main() {
   runApp(const MaterialApp(
