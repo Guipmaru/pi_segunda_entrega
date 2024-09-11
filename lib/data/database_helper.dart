@@ -2,12 +2,13 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-// Declaração da classe DatabaseHelper para gerenciar conexão com o banco de dados
+//  classe DatabaseHelper para gerenciar conexão com o banco de dados
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
   factory DatabaseHelper() => _instance;
 
   static Database? _database;
+
   // evitar a criação de novas instâncias de DatabaseHelper fora da classe
   DatabaseHelper._internal();
 
@@ -59,6 +60,15 @@ class DatabaseHelper {
       where: 'email = ? AND password = ?',
       whereArgs: [email, password],
     );
+    return res.isNotEmpty ? res.first : null;
+  }
+
+  // Função para buscar o último usuário logado no banco de dados
+  Future<Map<String, dynamic>?> getUsuarioLogado() async {
+    final db = await database;
+
+    // ultimo usuário logado
+    var res = await db.query('users', orderBy: 'id DESC', limit: 1);
     return res.isNotEmpty ? res.first : null;
   }
 }
