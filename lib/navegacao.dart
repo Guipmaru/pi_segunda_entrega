@@ -6,7 +6,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext) {
     return MaterialApp(initialRoute: '/',
     routes: (){
-    '/aluno': (context) => cadastro_aluno.dart(),
+    '/aluno': (context) => cadastro_aluno.dart(), 
     '/formulario': (context) => confirma_formulario.dart(),
     '/perfil': (context) => confirma_perfil.dart(),
     '/senha': (context) => esqueceu_senha.dart(),
