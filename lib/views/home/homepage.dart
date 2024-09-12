@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pi_segunda_entrega/controllers/user_controller.dart';
 import 'package:pi_segunda_entrega/views/profile/perfil.dart'; 
-import 'package:pi_segunda_entrega/views/auth/formulario.dart'; 
 import 'package:pi_segunda_entrega/views/auth/confere_agendamento.dart'; 
+import 'package:pi_segunda_entrega/views/date/agendamento_doacao.dart'; 
 import 'package:pi_segunda_entrega/views/auth/buscar_ponto.dart'; 
 
 class Homepage extends StatefulWidget {
