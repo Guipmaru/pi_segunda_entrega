@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:pi_segunda_entrega/models/user_model.dart';
 import 'package:pi_segunda_entrega/controllers/user_controller.dart';
 import 'package:pi_segunda_entrega/views/profile/perfil.dart'; 
 import 'package:pi_segunda_entrega/views/date/confere_agendamento.dart'; 
 import 'package:pi_segunda_entrega/views/date/agendamento_doacao.dart'; 
 import 'package:pi_segunda_entrega/views/local/local_doacao.dart'; 
+import 'package:pi_segunda_entrega/data/database_helper.dart'; 
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -15,8 +17,9 @@ class Homepage extends StatefulWidget {
 class HomepageState extends State<Homepage> {
   String firstName = '';
   String lastName = '';
-
+  String nextDonationDate = 'Você não possui doação agendada';
   final UserController _userController = UserController();
+  final DatabaseHelper _databaseHelper = DatabaseHelper();
 
   @override
   void initState() {
@@ -24,15 +27,31 @@ class HomepageState extends State<Homepage> {
     _loadUserData();
   }
 
-    Future<void> _loadUserData() async {
-      var user = await _userController.getUsuarioLogado();
-      if (user != null) {
+  Future<void> _loadUserData() async {
+    // Obtém o usuário logado diretamente como um objeto User
+    User? user = await _userController.getUsuarioLogado();
+    if (user != null) {
+      setState(() {
+        // Atualiza o nome e sobrenome usando o objeto User
+        firstName = user.firstName;
+        lastName = user.lastName;
+      });
+
+      // Busca o próximo agendamento do usuário logado
+      var nextAppointment = await _databaseHelper.getNextAppointment(user.id);
+      if (nextAppointment != null) {
         setState(() {
-          firstName = user.firstName;
-          lastName = user.lastName;
+          // Exibe a data do próximo agendamento
+          nextDonationDate = 'Próxima doação prevista: ${nextAppointment['data']} ${nextAppointment['hora']}';
+        });
+      } else {
+        // Mensagem se não houver agendamento
+        setState(() {
+          nextDonationDate = 'Você não possui doação agendada';
         });
       }
     }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,16 +100,15 @@ class HomepageState extends State<Homepage> {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text('Registro da sua última doação:',
+                children: [
+                  const Text('Registro da sua última doação:',
                       style: TextStyle(fontWeight: FontWeight.bold)),
-                  SizedBox(height: 10),
-                  Text('Próxima doação prevista:',
+                  const SizedBox(height: 10),
+                  Text(nextDonationDate,
                       style: TextStyle(fontWeight: FontWeight.bold)),
                 ],
               ),
             ),
-            // caixa com os botões de navegação para as outras telas 
             const SizedBox(height: 20),
             Container(
               width: screenWidth,

@@ -188,7 +188,21 @@ class DatabaseHelper {
       'local': local,
     });
   }
-
+    // Função para buscar o próximo agendamento do usuário
+  Future<Map<String, dynamic>?> getNextAppointment(int userId) async {
+    final db = await database;
+    
+    var res = await db.query(
+      'agendamentos',
+      where: 'user_id = ?',
+      whereArgs: [userId],
+      orderBy: 'data ASC, hora ASC',
+      limit: 1,
+    );
+    
+    // Verifica se a consulta retornou algum resultado e retorna o primeiro resultado ou null
+    return res.isNotEmpty ? res.first : null;
+}
   // Função para buscar agendamentos por usuário
   Future<List<Map<String, dynamic>>> getAgendamentosByUser(int userId) async {
     final db = await database;
