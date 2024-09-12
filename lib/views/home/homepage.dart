@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pi_segunda_entrega/controllers/user_controller.dart';
 import 'package:pi_segunda_entrega/views/profile/perfil.dart'; 
-import 'package:pi_segunda_entrega/views/auth/confere_agendamento.dart'; 
+import 'package:pi_segunda_entrega/views/date/confere_agendamento.dart'; 
 import 'package:pi_segunda_entrega/views/date/agendamento_doacao.dart'; 
 import 'package:pi_segunda_entrega/views/auth/buscar_ponto.dart'; 
 
@@ -102,7 +102,7 @@ class HomepageState extends State<Homepage> {
               child: Column(
                 children: [
                   _buildButton(context, 'Atualizar meus Dados para doação de sangue', const TelaPerfil(), screenWidth),
-                  _buildButton(context, 'Agendar minha doação de sangue', const TelaFormulario(), screenWidth),
+                  _buildButton(context, 'Agendar minha doação de sangue', const TelaAgendamentoDoacao(), screenWidth),
                   _buildButton(context, 'Trocar o agendamento da doação de sangue', const ConfereAgendamento(), screenWidth),
                   _buildButton(context, 'Buscar pontos para doação de sangue', const BuscarPonto(), screenWidth),
                 ],
