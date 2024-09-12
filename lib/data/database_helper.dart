@@ -1,13 +1,12 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-
-//função para limpar o banco de dados
-
+// Função para limpar o banco de dados
 Future<void> resetDatabase() async {
   String path = join(await getDatabasesPath(), 'app_database.db');
   await deleteDatabase(path);
 }
+
 // Classe DatabaseHelper para gerenciar conexão com o banco de dados
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -96,6 +95,19 @@ class DatabaseHelper {
           'cidade': 'Rio de Janeiro',
           'endereco': 'R. Frei Caneca, 8 - Centro, Rio de Janeiro - RJ, 20211-030',
         });
+
+        // Criação da tabela de agendamentos
+        await db.execute(
+          '''
+          CREATE TABLE agendamentos(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            data TEXT,
+            hora TEXT,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+          )
+          '''
+        );
       },
     );
   }
@@ -162,6 +174,26 @@ class DatabaseHelper {
       'hemocentros',
       where: 'cidade = ?',
       whereArgs: [cidade],
+    );
+  }
+
+  // Função para inserir um agendamento
+  Future<int> insertAgendamento(int userId, String data, String hora) async {
+    final db = await database;
+    return await db.insert('agendamentos', {
+      'user_id': userId,
+      'data': data,
+      'hora': hora,
+    });
+  }
+
+  // Função para buscar agendamentos por usuário
+  Future<List<Map<String, dynamic>>> getAgendamentosByUser(int userId) async {
+    final db = await database;
+    return await db.query(
+      'agendamentos',
+      where: 'user_id = ?',
+      whereArgs: [userId],
     );
   }
 }
