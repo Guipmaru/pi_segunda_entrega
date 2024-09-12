@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pi_segunda_entrega/controllers/user_controller.dart';
 import 'package:pi_segunda_entrega/views/home/homepage.dart';
-import 'package:pi_segunda_entrega/views/auth/cadastro_aluno.dart'; 
+import 'package:pi_segunda_entrega/views/auth/cadastro_user.dart'; 
 import 'package:pi_segunda_entrega/views/auth/esqueceu_senha.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -161,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const CadastroAluno(),
+                              builder: (context) => const CadastroUser(),
                             ),
                           );
                         },

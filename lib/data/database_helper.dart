@@ -96,7 +96,7 @@ class DatabaseHelper {
           'endereco': 'R. Frei Caneca, 8 - Centro, Rio de Janeiro - RJ, 20211-030',
         });
 
-        // Criação da tabela de agendamentos
+        // Criação da tabela de agendamentos com a coluna local
         await db.execute(
           '''
           CREATE TABLE agendamentos(
@@ -104,6 +104,7 @@ class DatabaseHelper {
             user_id INTEGER,
             data TEXT,
             hora TEXT,
+            local TEXT,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
           )
           '''
@@ -178,12 +179,13 @@ class DatabaseHelper {
   }
 
   // Função para inserir um agendamento
-  Future<int> insertAgendamento(int userId, String data, String hora) async {
+  Future<int> insertAgendamento(int userId, String data, String hora, String local) async {
     final db = await database;
     return await db.insert('agendamentos', {
       'user_id': userId,
       'data': data,
       'hora': hora,
+      'local': local,
     });
   }
 

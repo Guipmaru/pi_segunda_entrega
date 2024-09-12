@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:pi_segunda_entrega/data/database_helper.dart';
 
-class CadastroAluno extends StatefulWidget {
-  const CadastroAluno({super.key});
+class CadastroUser extends StatefulWidget {
+  const CadastroUser({super.key});
 
   @override
-  CadastroAlunoState createState() => CadastroAlunoState();
+  CadastroUserState createState() => CadastroUserState();
 }
 
 // Controles para entradas de dados
-class CadastroAlunoState extends State<CadastroAluno> {
+class CadastroUserState extends State<CadastroUser> {
   final _formKey = GlobalKey<FormState>();
   final _nomeController = TextEditingController();
   final _sobrenomeController = TextEditingController();

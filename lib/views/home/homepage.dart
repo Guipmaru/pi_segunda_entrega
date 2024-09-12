@@ -102,7 +102,7 @@ class HomepageState extends State<Homepage> {
               child: Column(
                 children: [
                   _buildButton(context, 'Atualizar meus Dados para doação de sangue', const TelaPerfil(), screenWidth),
-                  _buildButton(context, 'Agendar minha doação de sangue', const TelaAgendamentoDoacao(), screenWidth),
+                  _buildButton(context, 'Agendar minha doação de sangue',  AgendamentoScreen(), screenWidth),
                   _buildButton(context, 'Trocar o agendamento da doação de sangue', const ConfereAgendamento(), screenWidth),
                   _buildButton(context, 'Buscar pontos para doação de sangue', LocalDoacaoPage(), screenWidth),
                 ],
