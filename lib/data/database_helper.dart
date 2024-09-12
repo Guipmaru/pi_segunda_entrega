@@ -1,17 +1,17 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-// classe DatabaseHelper para gerenciar conexão com o banco de dados
+// Classe DatabaseHelper para gerenciar conexão com o banco de dados
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
   factory DatabaseHelper() => _instance;
 
   static Database? _database;
 
-  // evitar a criação de novas instâncias de DatabaseHelper fora da classe
+  // Evitar a criação de novas instâncias de DatabaseHelper fora da classe
   DatabaseHelper._internal();
 
-  // retorna a instância do banco de dados, se foi criada é retornada, caso contrário o banco de dados é inicializado
+  // Retorna a instância do banco de dados, se foi criada é retornada, caso contrário o banco de dados é inicializado
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDatabase();
@@ -23,6 +23,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'app_database.db');
     return await openDatabase(
       path,
+      version: 1, // Colocar a versão corretamente antes do onCreate
       onCreate: (db, version) async {
         // Criação da tabela de usuários
         await db.execute(
@@ -70,25 +71,25 @@ class DatabaseHelper {
           ''',
         );
 
-        // dados iniciais do hemocentro
+        // Dados iniciais do hemocentro
         await db.insert('hemocentros', {
           'nome': 'Hemocentro Unicamp',
           'cidade': 'Campinas',
-          'endereco': 'Universidade Estadual de Campinas - R. Carlos Chagas, 480 - Cidade Universitária, Campinas - SP, 13083-878'
+          'endereco': 'Universidade Estadual de Campinas - R. Carlos Chagas, 480 - Cidade Universitária, Campinas - SP, 13083-878',
         });
 
-        await db.insert('Hemocentros', {
-        'nome': 'Hemocentro da Santa Casa de São Paulo',
-        'cidade': 'São Paulo',
-        'endereco': 'R. Marquês de Itu, 579 - Vila Buarque, São Paulo - SP, 01223-001'
-         });
-        
-        await db.insert('Hemocentros', {
-        'nome': 'Hemorio',
-        'cidade': 'Rio de Janeiro',
-        'endereco': 'R. Frei Caneca, 8 - Centro, Rio de Janeiro - RJ, 20211-030'
+        await db.insert('hemocentros', {
+          'nome': 'Hemocentro da Santa Casa de São Paulo',
+          'cidade': 'São Paulo',
+          'endereco': 'R. Marquês de Itu, 579 - Vila Buarque, São Paulo - SP, 01223-001',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'Hemorio',
+          'cidade': 'Rio de Janeiro',
+          'endereco': 'R. Frei Caneca, 8 - Centro, Rio de Janeiro - RJ, 20211-030',
+        });
       },
-      version: 1,
     );
   }
 
