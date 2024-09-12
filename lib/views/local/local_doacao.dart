@@ -1,107 +1,147 @@
 import 'package:flutter/material.dart';
-/*
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+import 'database_helper.dart';
 
-class TelaLocalDoacao extends StatefulWidget {
-  const TelaLocalDoacao({Key? key}) : super(key: key);
-
+class LocalDoacaoPage extends StatefulWidget {
   @override
-  _TelaLocalDoacaoState createState() => _TelaLocalDoacaoState();
+  _LocalDoacaoPageState createState() => _LocalDoacaoPageState();
 }
 
-class _TelaLocalDoacaoState extends State<TelaLocalDoacao> {
- // Inicialização do controlador de mapas e coordenadas padrão
-  late GoogleMapController mapController;
+class _LocalDoacaoPageState extends State<LocalDoacaoPage> {
+  DatabaseHelper _dbHelper = DatabaseHelper();
+  Map<String, dynamic>? _usuarioLogado;
+  Map<String, dynamic>? _perfilUsuario;
+  List<Map<String, dynamic>> _hemocentros = [];
+  String _mensagemErro = '';
 
-  // Localização inicial do mapa (coordenadas fictícias)
-  final LatLng _initialPosition = const LatLng(-23.5505, -46.6333); // São Paulo, SP, Brasil
+  @override
+  void initState() {
+    super.initState();
+    _carregarDados();
+  }
 
-  // Lista de locais de doação fictícios (você pode alterar conforme sua necessidade)
-  final List<Map<String, dynamic>> _localDoacao = [
-    {
-      'nome': 'Hemocentro São Paulo',
-      'endereco': 'Av. Dr. Enéas Carvalho de Aguiar, 155',
-      'coordenadas': LatLng(-23.5587, -46.6602),
-    },
-    {
-      'nome': 'Hemocentro Campinas',
-      'endereco': 'Rua Carlos Chagas, 480',
-      'coordenadas': LatLng(-22.9068, -47.0626),
-    },
-  ];
+  // Função que carrega dados do usuário logado e seu perfil
+  Future<void> _carregarDados() async {
+    // Verifica o usuário logado
+    Map<String, dynamic>? usuario = await _dbHelper.getUsuarioLogado();
+    if (usuario == null) {
+      setState(() {
+        _mensagemErro = "Nenhum usuário logado.";
+      });
+      return;
+    }
 
-  // Método que inicializa o controlador de mapas
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
+    setState(() {
+      _usuarioLogado = usuario;
+    });
+
+    // Verifica o perfil do usuário
+    Map<String, dynamic>? perfil = await _dbHelper.getUserProfile(usuario['id']);
+    if (perfil == null || perfil['cidade'] == null) {
+      setState(() {
+        _mensagemErro = "Você precisa completar o seu cadastro.";
+      });
+      return;
+    }
+
+    setState(() {
+      _perfilUsuario = perfil;
+    });
+
+    // Busca hemocentros pela cidade do perfil do usuário
+    List<Map<String, dynamic>> hemocentros = await _dbHelper.getHemocentrosByCidade(perfil['cidade']);
+    setState(() {
+      _hemocentros = hemocentros;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Pega a largura da tela e aplica 80%
-    double screenWidth = MediaQuery.of(context).size.width * 0.8;
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Locais de Doação'),
-        backgroundColor: const Color.fromARGB(255, 81, 177, 84),
+        title: Text("Local de Doação"),
       ),
-      body: Column(
-        children: [
-          // Mapa mostrando a localização dos pontos de doação
-          SizedBox(
-            height: 300,
-            child: GoogleMap(
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(
-                target: _initialPosition,
-                zoom: 12,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: _mensagemErro.isNotEmpty
+            ? Center(child: Text(_mensagemErro, style: TextStyle(color: Colors.red)))
+            : _hemocentros.isNotEmpty
+                ? ListView.builder(
+                    itemCount: _hemocentros.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(_hemocentros[index]['nome']),
+                        subtitle: Text(_hemocentros[index]['endereco']),
+                      );
+                    },
+                  )
+                : Center(child: CircularProgressIndicator()),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _mostrarFormularioHemocentro(context),
+        child: Icon(Icons.add),
+        tooltip: 'Adicionar Hemocentro',
+      ),
+    );
+  }
+
+  // Exibe formulário para adicionar novo hemocentro
+  void _mostrarFormularioHemocentro(BuildContext context) {
+    TextEditingController nomeController = TextEditingController();
+    TextEditingController cidadeController = TextEditingController();
+    TextEditingController enderecoController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Adicionar Hemocentro"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextField(
+                controller: nomeController,
+                decoration: InputDecoration(labelText: "Nome"),
               ),
-              markers: _localDoacao
-                  .map((local) => Marker(
-                        markerId: MarkerId(local['nome']),
-                        position: local['coordenadas'],
-                        infoWindow: InfoWindow(
-                          title: local['nome'],
-                          snippet: local['endereco'],
-                        ),
-                      ))
-                  .toSet(),
-            ),
+              TextField(
+                controller: cidadeController,
+                decoration: InputDecoration(labelText: "Cidade"),
+              ),
+              TextField(
+                controller: enderecoController,
+                decoration: InputDecoration(labelText: "Endereço"),
+              ),
+            ],
           ),
-          const SizedBox(height: 20),
-          // Lista de locais de doação com informações
-          Expanded(
-            child: ListView.builder(
-              itemCount: _localDoacao.length,
-              itemBuilder: (context, index) {
-                final local = _localDoacao[index];
-                return Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 217, 235, 206),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          local['nome'],
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        Text(local['endereco']),
-                      ],
-                    ),
-                  ),
-                );
+          actions: <Widget>[
+            TextButton(
+              child: Text("Cancelar"),
+              onPressed: () {
+                Navigator.of(context).pop();
               },
             ),
-          ),
+            TextButton(
+              child: Text("Salvar"),
+              onPressed: () async {
+                String nome = nomeController.text;
+                String cidade = cidadeController.text;
+                String endereco = enderecoController.text;
+
+                if (nome.isNotEmpty && cidade.isNotEmpty && endereco.isNotEmpty) {
+                  await _dbHelper.insertHemocentro(nome, cidade, endereco);
+                  _carregarDados(); // Recarrega os dados
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
         ],
       ),
     );
