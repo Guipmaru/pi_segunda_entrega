@@ -57,6 +57,32 @@ class DatabaseHelper {
           )
           ''',
         );
+
+        // Criação da tabela de hemocentros
+        await db.execute(
+          '''
+          CREATE TABLE hemocentros(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT,
+            cidade TEXT,
+            endereco TEXT
+          )
+          ''',
+        );
+
+        // dados iniciais do hemocentro
+        await db.insert('hemocentros', {
+          'nome': 'Hemocentro Unicamp',
+          'cidade': 'Campinas',
+          'endereco': 'Universidade Estadual de Campinas - R. Carlos Chagas, 480 - Cidade Universitária, Campinas - SP, 13083-878'
+        });
+
+        // Inserir outros hemocentros aqui 
+        // await db.insert('hemocentros', {
+        //   'nome': 'Outro Hemocentro',
+        //   'cidade': 'Outra Cidade',
+        //   'endereco': 'Outro Endereço'
+        // });
       },
       version: 1,
     );
@@ -105,5 +131,25 @@ class DatabaseHelper {
     final db = await database;
     var res = await db.query('user_profile', where: 'user_id = ?', whereArgs: [userId]);
     return res.isNotEmpty ? res.first : null;
+  }
+
+  // Função para inserir um novo hemocentro no banco de dados
+  Future<int> insertHemocentro(String nome, String cidade, String endereco) async {
+    final db = await database;
+    return await db.insert('hemocentros', {
+      'nome': nome,
+      'cidade': cidade,
+      'endereco': endereco,
+    });
+  }
+
+  // Função para buscar hemocentros por cidade
+  Future<List<Map<String, dynamic>>> getHemocentrosByCidade(String cidade) async {
+    final db = await database;
+    return await db.query(
+      'hemocentros',
+      where: 'cidade = ?',
+      whereArgs: [cidade],
+    );
   }
 }
