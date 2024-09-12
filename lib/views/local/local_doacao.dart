@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+/*
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class TelaLocalDoacao extends StatefulWidget {
@@ -9,7 +10,7 @@ class TelaLocalDoacao extends StatefulWidget {
 }
 
 class _TelaLocalDoacaoState extends State<TelaLocalDoacao> {
-  // Inicialização do controlador de mapas e coordenadas padrão
+ // Inicialização do controlador de mapas e coordenadas padrão
   late GoogleMapController mapController;
 
   // Localização inicial do mapa (coordenadas fictícias)
@@ -106,3 +107,4 @@ class _TelaLocalDoacaoState extends State<TelaLocalDoacao> {
     );
   }
 }
+*/
