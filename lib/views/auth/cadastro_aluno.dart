@@ -25,6 +25,7 @@ class CadastroAlunoState extends State<CadastroAluno> {
       backgroundColor: const Color.fromARGB(255, 208, 241, 209),
       appBar: AppBar(
         title: const Text('Cadastre-se'),
+        backgroundColor: const Color.fromARGB(255, 81, 177, 84),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

@@ -1,35 +1,31 @@
-import 'package:flutter/material.dart';
-import 'iniciando_a_homepage.dart'; 
+import 'package:flutter/material.dart'; 
+import 'package:pi_segunda_entrega/views/home/homepage.dart'; 
 import 'package:pi_segunda_entrega/data/database_helper.dart';
 
-//Decleração de classe
-class TelaFormulario extends StatelessWidget {
-  const TelaFormulario({super.key});
+class BuscarPonto extends StatelessWidget {
+  const BuscarPonto({super.key});
 
-//criação do scaffold
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Formulário de Doação'),
+        title: const Text('Pontos de doação'),
       ),
-
-      //criação do corpo do código
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'Preencha seu formulário de doação',
+              'Locais de doação',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // fazer o formulário de doação
+                // Aqui vai ser mostrado os locais de pontos de doação
                 Navigator.pop(context); // Volta para a tela anterior (Homepage)
               },
-              child: const Text('Voltar para a Home'),
+              child: const Text('voltar'),
             ),
           ],
         ),

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-//definição de nome de tela para chamada
-class SegundaTela extends StatefulWidget {
-  const SegundaTela({super.key});
+
+class EsqueceuSenha extends StatefulWidget {
+  const EsqueceuSenha({super.key});
 
   @override
-  _SegundaTelaState createState() => _SegundaTelaState();
+  _ForgotPasswordScreenState createState() => _ForgotPasswordScreenState();
 }
 
-class _SegundaTelaState extends State<SegundaTela> {
+class _ForgotPasswordScreenState extends State<EsqueceuSenha> {
   final _emailController = TextEditingController();
 
   void _showRecoveryDialog() {
@@ -37,6 +37,7 @@ class _SegundaTelaState extends State<SegundaTela> {
       backgroundColor: const Color.fromARGB(255, 208, 241, 209),
       appBar: AppBar(
         title: const Text('Esqueceu sua senha?'),
+        backgroundColor: const Color.fromARGB(255, 81, 177, 84),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -75,7 +76,6 @@ class _SegundaTelaState extends State<SegundaTela> {
               onPressed: () {
                 if (_emailController.text.isNotEmpty) {
                   _showRecoveryDialog();
-                } else {
                 }
               },
             ),
