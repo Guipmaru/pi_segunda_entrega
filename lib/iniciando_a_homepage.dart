@@ -17,11 +17,6 @@ class HomepageState extends State<Homepage> {
   String firstName = '';
   String lastName = '';
 
-  // Variáveis para definir a largura e altura
-  final double containerWidth = 800; // Largura do Container
-  final double buttonWidth = 700;    // Largura dos botões
-  final double buttonHeight = 60;    // Altura dos botões
-
   @override
   void initState() {
     super.initState();
@@ -40,32 +35,48 @@ class HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
+    // Pega a largura da tela e aplica 80%
+    double screenWidth = MediaQuery.of(context).size.width * 0.8;
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 190, 228, 191),
       appBar: AppBar(
         title: const Text('Bem-vindo'),
         backgroundColor: const Color.fromARGB(255, 81, 177, 84),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(height: 20),
-          Text(
-            'Como é bom te ver aqui, $firstName $lastName',
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
+      body: Center( // Usando o Center para centralizar o conteúdo
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center, // Centraliza verticalmente
+          crossAxisAlignment: CrossAxisAlignment.center, // Centraliza horizontalmente
+          children: [
+            const SizedBox(height: 20),
+            //texto de boas vindas
+            Text.rich(
+              TextSpan(
+                text: 'Como é bom te ver aqui,', 
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+                children: <TextSpan>[
+                  const TextSpan(text: '\n'), // Quebra de linha
+                  TextSpan(
+                    text: '$firstName $lastName', // Nome e sobrenome puxados do database
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 20), // Espaçamento entre o título e o texto
+            const SizedBox(height: 20), // Espaçamento entre o título e o texto
 
-          // Registro de doação
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 100),
-            child: Container(
-              width: containerWidth, // Largura ajustável do Container
+            // Registro de doação
+            Container(
+              width: screenWidth, // Largura ajustável - 80% da tela
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 217, 235, 206),
@@ -82,14 +93,11 @@ class HomepageState extends State<Homepage> {
                 ],
               ),
             ),
-          ),
-          const SizedBox(height: 20), // Espaçamento entre o texto e os botões
+            const SizedBox(height: 20), // Espaçamento entre o texto e os botões
 
-          // Botões de navegação das telas
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 100),
-            child: Container(
-              width: containerWidth, // Largura ajustável do Container
+            // Botões de navegação das telas
+            Container(
+              width: screenWidth, // Largura ajustável - 80% da tela
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -97,25 +105,25 @@ class HomepageState extends State<Homepage> {
               ),
               child: Column(
                 children: [
-                  _buildButton(context, 'Atualizar meus Dados para doação de sangue', TelaPerfil()),
-                  _buildButton(context, 'Agendar minha doação de sangue', TelaFormulario()),
-                  _buildButton(context, 'Trocar o agendamento da doação de sangue', ConfereAgendamento()),
-                  _buildButton(context, 'Buscar pontos para doação de sangue', TelaFormulario()),
+                  _buildButton(context, 'Atualizar meus Dados para doação de sangue', TelaPerfil(), screenWidth),
+                  _buildButton(context, 'Agendar minha doação de sangue', TelaFormulario(), screenWidth),
+                  _buildButton(context, 'Trocar o agendamento da doação de sangue', ConfereAgendamento(), screenWidth),
+                  _buildButton(context, 'Buscar pontos para doação de sangue', TelaFormulario(), screenWidth),
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildButton(BuildContext context, String label, Widget page) {
+  // Modificação do botão para ajustar largura dinamicamente
+  Widget _buildButton(BuildContext context, String label, Widget page, double width) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: SizedBox(
-        width: buttonWidth, // Largura ajustável do botão
-        height: buttonHeight, // Altura ajustável do botão
+        width: width, // Largura ajustável
         child: MaterialButton(
           color: const Color.fromARGB(255, 81, 177, 84),
           textColor: Colors.white,
