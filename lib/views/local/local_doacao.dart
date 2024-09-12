@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 import 'package:pi_segunda_entrega/data/database_helper.dart';
-/*
+
 class LocalDoacaoPage extends StatefulWidget {
   @override
   _LocalDoacaoPageState createState() => _LocalDoacaoPageState();
@@ -21,39 +19,45 @@ class _LocalDoacaoPageState extends State<LocalDoacaoPage> {
     _carregarDados();
   }
 
-  // Função que carrega dados do usuário logado e seu perfil
+  // Função que carrega dados do usuário logado e hemocentros
   Future<void> _carregarDados() async {
-    // Verifica o usuário logado
-    Map<String, dynamic>? usuario = await _dbHelper.getUsuarioLogado();
-    if (usuario == null) {
+    try {
+      // Verifica o usuário logado
+      Map<String, dynamic>? usuario = await _dbHelper.getUsuarioLogado();
+      if (usuario == null) {
+        setState(() {
+          _mensagemErro = "Nenhum usuário logado.";
+        });
+        return;
+      }
+
       setState(() {
-        _mensagemErro = "Nenhum usuário logado.";
+        _usuarioLogado = usuario;
       });
-      return;
-    }
 
-    setState(() {
-      _usuarioLogado = usuario;
-    });
+      // Verifica o perfil do usuário
+      Map<String, dynamic>? perfil = await _dbHelper.getUserProfile(usuario['id']);
+      if (perfil == null || perfil['cidade'] == null) {
+        setState(() {
+          _mensagemErro = "Você precisa completar o seu cadastro.";
+        });
+        return;
+      }
 
-    // Verifica o perfil do usuário
-    Map<String, dynamic>? perfil = await _dbHelper.getUserProfile(usuario['id']);
-    if (perfil == null || perfil['cidade'] == null) {
       setState(() {
-        _mensagemErro = "Você precisa completar o seu cadastro.";
+        _perfilUsuario = perfil;
       });
-      return;
+
+      // Busca hemocentros pela cidade do perfil do usuário
+      List<Map<String, dynamic>> hemocentros = await _dbHelper.getHemocentrosByCidade(perfil['cidade']);
+      setState(() {
+        _hemocentros = hemocentros;
+      });
+    } catch (e) {
+      setState(() {
+        _mensagemErro = "Erro ao carregar os dados: $e";
+      });
     }
-
-    setState(() {
-      _perfilUsuario = perfil;
-    });
-
-    // Busca hemocentros pela cidade do perfil do usuário
-    List<Map<String, dynamic>> hemocentros = await _dbHelper.getHemocentrosByCidade(perfil['cidade']);
-    setState(() {
-      _hemocentros = hemocentros;
-    });
   }
 
   @override
@@ -141,10 +145,3 @@ class _LocalDoacaoPageState extends State<LocalDoacaoPage> {
     );
   }
 }
-
-        ],
-      ),
-    );
-  }
-}
-*/

@@ -1,6 +1,13 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+
+//função para limpar o banco de dados
+
+Future<void> resetDatabase() async {
+  String path = join(await getDatabasesPath(), 'app_database.db');
+  await deleteDatabase(path);
+}
 // Classe DatabaseHelper para gerenciar conexão com o banco de dados
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
