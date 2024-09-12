@@ -77,12 +77,16 @@ class DatabaseHelper {
           'endereco': 'Universidade Estadual de Campinas - R. Carlos Chagas, 480 - Cidade Universitária, Campinas - SP, 13083-878'
         });
 
-        // Inserir outros hemocentros aqui 
-        // await db.insert('hemocentros', {
-        //   'nome': 'Outro Hemocentro',
-        //   'cidade': 'Outra Cidade',
-        //   'endereco': 'Outro Endereço'
-        // });
+        await db.insert('Hemocentros', {
+        'nome': 'Hemocentro da Santa Casa de São Paulo',
+        'cidade': 'São Paulo',
+        'endereco': 'R. Marquês de Itu, 579 - Vila Buarque, São Paulo - SP, 01223-001'
+         });
+        
+        await db.insert('Hemocentros', {
+        'nome': 'Hemorio',
+        'cidade': 'Rio de Janeiro',
+        'endereco': 'R. Frei Caneca, 8 - Centro, Rio de Janeiro - RJ, 20211-030'
       },
       version: 1,
     );
