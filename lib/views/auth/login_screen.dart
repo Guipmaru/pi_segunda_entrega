@@ -48,15 +48,21 @@ class _LoginScreenState extends State<LoginScreen> {
       _passwordController.clear();
     });
   }
-
-  @override
+  
+@override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 208, 241, 209),
+      backgroundColor: const Color.fromARGB(255, 173, 247, 175),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          // Adicionando uma imagem
+          Image.asset(
+            'logotipo.jpg',
+            width: 20,
+            height: 20,
+          ),
           const Text(
             'Login',
             style: TextStyle(
