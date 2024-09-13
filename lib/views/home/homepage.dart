@@ -67,7 +67,17 @@ class HomepageState extends State<Homepage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
+
+            // logo do projeto
+            Image.asset(
+              'lib/assets/images/logotipo-semfundo.png', // Caminho da imagem
+              width: 200, // Largura da imagem
+              height: 200, // Altura da imagem
+            ),
+            const SizedBox(height: 0),
+
+            // Texto de boas-vindas
             Text.rich(
               TextSpan(
                 text: 'Como é bom te ver aqui,',
@@ -104,7 +114,7 @@ class HomepageState extends State<Homepage> {
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 10),
                   Text(nextDonationDate,
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
                 ],
               ),
             ),

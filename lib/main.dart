@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'views/auth/login_screen.dart';
-import 'views/home/homepage.dart'; // Importe a tela Homepage
+import 'views/home/homepage.dart'; 
 import 'package:pi_segunda_entrega/data/database_helper.dart';
 
 void main() async {
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       // Define a tela inicial como LoginScreen
       initialRoute: '/',
       routes: {
-        '/': (context) => LoginScreen(), // Tela de login
+        '/': (context) => LoginScreen(),
         '/homepage': (context) => Homepage(), // Tela inicial após login
       },
     );
