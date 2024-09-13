@@ -37,12 +37,23 @@ class HomepageState extends State<Homepage> {
       });
 
       var nextAppointment = await _databaseHelper.getAgendamento(user.id);
+      
       if (nextAppointment != null) {
         setState(() {
-          // Usa DateFormat para formatar a data
-          DateTime dateTime = DateTime.parse(nextAppointment['data']);
-          String formattedDate = DateFormat('dd-MM-yyyy').format(dateTime);
-          nextDonationDate = 'Próxima doação prevista: $formattedDate ${nextAppointment['hora']}';
+          try {
+            // Parse the date using DateFormat
+            DateFormat inputFormat = DateFormat('dd-MM-yyyy');
+            DateTime dateTime = inputFormat.parse(nextAppointment['data']);
+            
+            // Format the date for display
+            DateFormat outputFormat = DateFormat('dd-MM-yyyy');
+            String formattedDate = outputFormat.format(dateTime);
+            
+            nextDonationDate = 'Próxima doação prevista: $formattedDate ${nextAppointment['hora']}';
+          } catch (e) {
+            print('Error parsing date: $e');
+            nextDonationDate = 'Erro ao formatar a data do agendamento';
+          }
         });
       } else {
         setState(() {

@@ -230,7 +230,7 @@ class _TelaPerfilState extends State<TelaPerfil> {
                   Expanded(
                     child: TextFormField(
                       controller: _deficienciaController,
-                      decoration: const InputDecoration(labelText: 'Deficiência'),
+                      decoration: const InputDecoration(labelText: 'PCD?'),
                     ),
                   ),
                 ],
@@ -240,7 +240,7 @@ class _TelaPerfilState extends State<TelaPerfil> {
               // Segunda linha: Doença crônica
               TextFormField(
                 controller: _doencaController,
-                decoration: const InputDecoration(labelText: 'Doença crônica'),
+                decoration: const InputDecoration(labelText: 'Possui doenças crônicas?'),
               ),
               const SizedBox(height: 20),
 

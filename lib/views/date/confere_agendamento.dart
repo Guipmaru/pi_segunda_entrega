@@ -34,12 +34,17 @@ class ConfereAgendamentoState extends State<ConfereAgendamento> {
           appointmentLocation = nextAppointment['local'];
         });
       } else {
-        _showNoAppointmentMessage(); // Exibe mensagem quando não houver agendamento
+        _showNoAppointmentMessage();
       }
     }
   }
 
   Future<void> _updateAppointment(DateTime newDate, TimeOfDay newTime, String newLocation) async {
+    if (newLocation.isEmpty) {
+      _showMessage('Por favor, informe o novo local.', false);
+      return;
+    }
+
     var user = await _userController.getUsuarioLogado();
     if (user != null) {
       await _databaseHelper.updateAgendamento(
@@ -139,7 +144,7 @@ class ConfereAgendamentoState extends State<ConfereAgendamento> {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: initialDate,
-      firstDate: DateTime(2000),
+      firstDate: DateTime.now(),
       lastDate: DateTime(2100),
     );
     if (pickedDate != null && pickedDate != initialDate) {
@@ -193,11 +198,11 @@ class ConfereAgendamentoState extends State<ConfereAgendamento> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _selectDate,
-                    child: Text('Selecionar Nova Data'),
+                    child: const Text('Selecionar Nova Data'),
                   ),
                   ElevatedButton(
                     onPressed: _selectTime,
-                    child: Text('Selecionar Novo Horário'),
+                    child: const Text('Selecionar Novo Horário'),
                   ),
                   _buildTextField('Novo Local'),
                   const SizedBox(height: 20),
@@ -206,14 +211,14 @@ class ConfereAgendamentoState extends State<ConfereAgendamento> {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          if (selectedDate != null && selectedTime != null) {
+                          if (selectedDate != null && selectedTime != null && appointmentLocation.isNotEmpty) {
                             _updateAppointment(
                               selectedDate!,
                               selectedTime!,
                               appointmentLocation,
                             );
                           } else {
-                            _showMessage('Por favor, selecione uma data e uma hora.', false);
+                            _showMessage('Por favor, selecione uma data, hora e local.', false);
                           }
                         },
                         child: const Text('Trocar'),
