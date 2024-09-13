@@ -103,13 +103,13 @@ class _TelaPerfilState extends State<TelaPerfil> {
         title: const Text('Perfil'),
         backgroundColor: const Color.fromARGB(255, 208, 241, 209),
       ),
-      body: Padding(
+      body: Container(
+        color: const Color.fromARGB(255, 208, 241, 209), // Cor de fundo verde
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
-
               // Dados Pessoais
               const Text(
                 'Dados pessoais',
@@ -247,6 +247,10 @@ class _TelaPerfilState extends State<TelaPerfil> {
               // Botão de atualizar
               ElevatedButton(
                 onPressed: _updateUserProfile,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 0, 150, 0), // Verde mais escuro
+                  foregroundColor: Colors.white, // Texto branco
+                ),
                 child: const Text('Atualizar dados'),
               ),
             ],
