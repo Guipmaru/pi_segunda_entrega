@@ -58,14 +58,14 @@ class _LoginScreenState extends State<LoginScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Adicionando uma imagem
-          Image.asset('asset/images/logotipo.png',
+          Image.asset('lib/assets/images/logotipo.png',
             width: 200,
             height: 200,
           ),
           const Text(
             'Login',
             style: TextStyle(
-              fontSize: 35,
+              fontSize: 25,
               color: Colors.black,
               fontWeight: FontWeight.bold,
             ),
