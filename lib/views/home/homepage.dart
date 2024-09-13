@@ -62,6 +62,9 @@ class HomepageState extends State<Homepage> {
       }
     }
   }
+  void _logout() {
+    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +75,7 @@ class HomepageState extends State<Homepage> {
       appBar: AppBar(
         title: const Text('Bem-vindo'),
         backgroundColor: const Color.fromARGB(255, 81, 177, 84),
+        
       ),
       body: Center(
         child: Column(
