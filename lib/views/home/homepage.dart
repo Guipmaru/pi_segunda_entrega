@@ -38,7 +38,7 @@ class HomepageState extends State<Homepage> {
       });
 
       // Busca o próximo agendamento do usuário logado
-      var nextAppointment = await _databaseHelper.getNextAppointment(user.id);
+      var nextAppointment = await _databaseHelper.getAgendamento(user.id);
       if (nextAppointment != null) {
         setState(() {
           // Exibe a data do próximo agendamento

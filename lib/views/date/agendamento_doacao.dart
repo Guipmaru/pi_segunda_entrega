@@ -105,7 +105,7 @@ class _AgendamentoScreenState extends State<AgendamentoScreen> {
               child: Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop(); // Fecha o diálogo de confirmação
-                 Navigator.of(context).pushNamedAndRemoveUntil('/homepage', (route) => false); // Redireciona para a Homepage
+                Navigator.of(context).pushNamedAndRemoveUntil('/homepage', (route) => false); // Redireciona para a Homepage
               },
             ),
           ],
@@ -142,163 +142,164 @@ class _AgendamentoScreenState extends State<AgendamentoScreen> {
       appBar: AppBar(
         title: Text('Agendamento de Doação'),
       ),
-      body: Container(
-        color: const Color.fromARGB(255, 208, 241, 209), // Cor de fundo verde clara
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            if (_userName != null)
-              Text(
-                'Bem-vindo, $_userName!',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      resizeToAvoidBottomInset: true, // Adicione esta linha para ajustar o layout ao abrir o teclado
+      body: SingleChildScrollView(  // Envolver o conteúdo em SingleChildScrollView
+        child: Container(
+          color: const Color.fromARGB(255, 208, 241, 209), // Cor de fundo verde clara
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              if (_userName != null)
+                Text(
+                  'Bem-vindo, $_userName!',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              SizedBox(height: 16.0),
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: _heightController,
+                            decoration: InputDecoration(
+                              labelText: 'Altura',
+                              labelStyle: TextStyle(fontSize: 10), // Tamanho do título do campo
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Campo obrigatório';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        SizedBox(width: 16.0),
+                        Expanded(
+                          child: TextFormField(
+                            controller: _weightController,
+                            decoration: InputDecoration(
+                              labelText: 'Peso',
+                              labelStyle: TextStyle(fontSize: 10), // Tamanho do título do campo
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Campo obrigatório';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: _illnessController,
+                            decoration: InputDecoration(
+                              labelText: 'Ficou doente recentemente? (Sim ou Não)',
+                              labelStyle: TextStyle(fontSize: 10), // Tamanho do título do campo
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Campo obrigatório';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        SizedBox(width: 16.0),
+                        Expanded(
+                          child: TextFormField(
+                            controller: _tattoosController,
+                            decoration: InputDecoration(
+                              labelText: 'Possui tatuagens? (Sim ou Não)',
+                              labelStyle: TextStyle(fontSize: 10), // Tamanho do título do campo
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Campo obrigatório';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16.0),
+                    TextFormField(
+                      controller: _surgeryController,
+                      decoration: InputDecoration(
+                        labelText: 'Fez alguma cirurgia no último ano? Se sim, qual?',
+                        labelStyle: TextStyle(fontSize: 10), // Tamanho do título do campo
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo obrigatório';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 16.0),
+                    TextButton(
+                      onPressed: _selectDate,
+                      child: Text(
+                        _selectedDate == null
+                            ? 'Selecionar Data'
+                            : 'Data Selecionada: ${DateFormat('yyyy-MM-dd').format(_selectedDate!)}',
+                        style: TextStyle(fontSize: 10), // Tamanho do texto do botão
+                      ),
+                    ),
+                    SizedBox(height: 16.0),
+                    TextButton(
+                      onPressed: _selectTime,
+                      child: Text(
+                        _selectedTime == null
+                            ? 'Selecionar Hora'
+                            : 'Hora Selecionada: ${_selectedTime?.format(context)}',
+                        style: TextStyle(fontSize: 10), // Tamanho do texto do botão
+                      ),
+                    ),
+                    SizedBox(height: 16.0),
+                    TextFormField(
+                      controller: _locationController,
+                      decoration: InputDecoration(
+                        labelText: 'Local de Doação',
+                        labelStyle: TextStyle(fontSize: 10), // Tamanho do título do campo
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo obrigatório';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 16.0),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green, // Cor de fundo do botão
+                        foregroundColor: Colors.white, // Cor do texto do botão
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10), // Bordas arredondadas
+                        ),
+                      ),
+                      onPressed: _confirmAppointment,
+                      child: Text(
+                        'Confirmar Agendamento',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            SizedBox(height: 16.0),
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _heightController,
-                          decoration: InputDecoration(
-                            labelText: 'Altura',
-                            labelStyle: TextStyle(fontSize: 10), // Tamanho do título do campo
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Campo obrigatório';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 16.0),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _weightController,
-                          decoration: InputDecoration(
-                            labelText: 'Peso',
-                            labelStyle: TextStyle(fontSize: 10), // Tamanho do título do campo
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Campo obrigatório';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _illnessController,
-                          decoration: InputDecoration(
-                            labelText: 'Ficou doente recentemente? (Sim ou Não)',
-                            labelStyle: TextStyle(fontSize: 10), // Tamanho do título do campo
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Campo obrigatório';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 16.0),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _tattoosController,
-                          decoration: InputDecoration(
-                            labelText: 'Possui tatuagens? (Sim ou Não)',
-                            labelStyle: TextStyle(fontSize: 10), // Tamanho do título do campo
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Campo obrigatório';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16.0),
-                  TextFormField(
-                    controller: _surgeryController,
-                    decoration: InputDecoration(
-                      labelText: 'Fez alguma cirurgia no último ano? Se sim, qual?',
-                      labelStyle: TextStyle(fontSize: 10), // Tamanho do título do campo
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Campo obrigatório';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 16.0),
-                  TextButton(
-                    onPressed: _selectDate,
-                    child: Text(
-                      _selectedDate == null
-                          ? 'Selecionar Data'
-                          : 'Data Selecionada: ${DateFormat('yyyy-MM-dd').format(_selectedDate!)}',
-                      style: TextStyle(fontSize: 10), // Tamanho do texto do botão
-                    ),
-                  ),
-                  SizedBox(height: 16.0),
-                  TextButton(
-                    onPressed: _selectTime,
-                    child: Text(
-                      _selectedTime == null
-                          ? 'Selecionar Hora'
-                          : 'Hora Selecionada: ${_selectedTime?.format(context)}',
-                      style: TextStyle(fontSize: 10), // Tamanho do texto do botão
-                    ),
-                  ),
-                  SizedBox(height: 16.0),
-                  TextFormField(
-                    controller: _locationController,
-                    decoration: InputDecoration(
-                      labelText: 'Local de Doação',
-                      labelStyle: TextStyle(fontSize: 10), // Tamanho do título do campo
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Campo obrigatório';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 32.0),
-                  ElevatedButton(
-                    onPressed: _confirmAppointment,
-                    child: Text('Confirmar Agendamento'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green, // Cor de fundo do botão
-                      foregroundColor: Colors.white, // Cor do texto do botão
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10), // Bordas arredondadas
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 16.0), // Padding do botão
-                      textStyle: TextStyle(
-                        fontSize: 14.0, // Tamanho do texto
-                      ),
-                      minimumSize: Size(200, 50), // Tamanho mínimo do botão (largura, altura)
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

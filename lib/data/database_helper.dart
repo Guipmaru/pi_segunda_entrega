@@ -189,7 +189,7 @@ class DatabaseHelper {
     });
   }
     // Função para buscar o próximo agendamento do usuário
-  Future<Map<String, dynamic>?> getNextAppointment(int userId) async {
+  Future<Map<String, dynamic>?> getAgendamento(int userId) async {
     final db = await database;
     
     var res = await db.query(
@@ -207,6 +207,28 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getAgendamentosByUser(int userId) async {
     final db = await database;
     return await db.query(
+      'agendamentos',
+      where: 'user_id = ?',
+      whereArgs: [userId],
+    );
+  }
+    // Função para atualizar o agendamento
+  Future<int> updateAgendamento(int userId, String newDate, String newLocation) async {
+    final db = await database;
+    return await db.update(
+      'agendamentos',
+      {
+        'data': newDate,
+        'local': newLocation,
+      },
+      where: 'user_id = ?',
+      whereArgs: [userId],
+    );
+  }
+    // Função para deletar o agendamento
+  Future<int> deleteAgendamento(int userId) async {
+    final db = await database;
+    return await db.delete(
       'agendamentos',
       where: 'user_id = ?',
       whereArgs: [userId],

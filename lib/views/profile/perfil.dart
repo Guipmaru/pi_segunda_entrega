@@ -101,6 +101,7 @@ class _TelaPerfilState extends State<TelaPerfil> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Perfil'),
+        backgroundColor: const Color.fromARGB(255, 208, 241, 209),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -108,12 +109,6 @@ class _TelaPerfilState extends State<TelaPerfil> {
           key: _formKey,
           child: ListView(
             children: [
-              // Nome e Sobrenome no topo
-              Text(
-                'Nome: ${_firstNameController.text} ${_lastNameController.text}',
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
 
               // Dados Pessoais
               const Text(
