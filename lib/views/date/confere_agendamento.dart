@@ -192,7 +192,7 @@ class ConfereAgendamentoState extends State<ConfereAgendamento> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Sua doação está marcada para: ${selectedDate?.toLocal().toString().split(' ')[0] ?? ''} ${selectedTime?.format(context) ?? ''}\nLocal: $appointmentLocation',
+                    'Sua doação será marcada para: ${selectedDate?.toLocal().toString().split(' ')[0] ?? ''} ${selectedTime?.format(context) ?? ''}\nLocal: $appointmentLocation',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 20),
