@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; 
 import 'package:pi_segunda_entrega/models/user_model.dart';
 import 'package:pi_segunda_entrega/controllers/user_controller.dart';
 import 'package:pi_segunda_entrega/views/profile/perfil.dart'; 
@@ -28,24 +29,22 @@ class HomepageState extends State<Homepage> {
   }
 
   Future<void> _loadUserData() async {
-    // Obtém o usuário logado diretamente como um objeto User
     User? user = await _userController.getUsuarioLogado();
     if (user != null) {
       setState(() {
-        // Atualiza o nome e sobrenome usando o objeto User
         firstName = user.firstName;
         lastName = user.lastName;
       });
 
-      // Busca o próximo agendamento do usuário logado
       var nextAppointment = await _databaseHelper.getAgendamento(user.id);
       if (nextAppointment != null) {
         setState(() {
-          // Exibe a data do próximo agendamento
-          nextDonationDate = 'Próxima doação prevista: ${nextAppointment['data']} ${nextAppointment['hora']}';
+          // Usa DateFormat para formatar a data
+          DateTime dateTime = DateTime.parse(nextAppointment['data']);
+          String formattedDate = DateFormat('dd-MM-yyyy').format(dateTime);
+          nextDonationDate = 'Próxima doação prevista: $formattedDate ${nextAppointment['hora']}';
         });
       } else {
-        // Mensagem se não houver agendamento
         setState(() {
           nextDonationDate = 'Você não possui doação agendada';
         });
@@ -120,7 +119,7 @@ class HomepageState extends State<Homepage> {
               child: Column(
                 children: [
                   _buildButton(context, 'Atualizar meus Dados para doação de sangue', const TelaPerfil(), screenWidth),
-                  _buildButton(context, 'Agendar minha doação de sangue',  AgendamentoScreen(), screenWidth),
+                  _buildButton(context, 'Agendar minha doação de sangue', AgendamentoScreen(), screenWidth),
                   _buildButton(context, 'Trocar o agendamento da doação de sangue', const ConfereAgendamento(), screenWidth),
                   _buildButton(context, 'Buscar pontos para doação de sangue', LocalDoacaoPage(), screenWidth),
                 ],

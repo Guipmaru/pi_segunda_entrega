@@ -11,7 +11,8 @@ class ConfereAgendamento extends StatefulWidget {
 }
 
 class ConfereAgendamentoState extends State<ConfereAgendamento> {
-  String appointmentDate = '';
+  DateTime? selectedDate;
+  TimeOfDay? selectedTime;
   String appointmentLocation = '';
   final UserController _userController = UserController();
   final DatabaseHelper _databaseHelper = DatabaseHelper();
@@ -28,7 +29,8 @@ class ConfereAgendamentoState extends State<ConfereAgendamento> {
       var nextAppointment = await _databaseHelper.getAgendamento(user.id);
       if (nextAppointment != null) {
         setState(() {
-          appointmentDate = nextAppointment['data'];
+          selectedDate = DateTime.parse(nextAppointment['data']);
+          selectedTime = TimeOfDay.fromDateTime(DateTime.parse(nextAppointment['hora']));
           appointmentLocation = nextAppointment['local'];
         });
       } else {
@@ -37,10 +39,15 @@ class ConfereAgendamentoState extends State<ConfereAgendamento> {
     }
   }
 
-  Future<void> _updateAppointment(String newDate, String newLocation) async {
+  Future<void> _updateAppointment(DateTime newDate, TimeOfDay newTime, String newLocation) async {
     var user = await _userController.getUsuarioLogado();
     if (user != null) {
-      await _databaseHelper.updateAgendamento(user.id, newDate, newLocation);
+      await _databaseHelper.updateAgendamento(
+        user.id,
+        newDate.toIso8601String().split('T')[0], // Formata a data no formato YYYY-MM-DD
+        newTime.format(context), // Formata a hora no formato HH:mm
+        newLocation,
+      );
       _showMessage('Seu agendamento foi alterado com sucesso!', true);
     }
   }
@@ -127,6 +134,34 @@ class ConfereAgendamentoState extends State<ConfereAgendamento> {
     );
   }
 
+  Future<void> _selectDate() async {
+    DateTime initialDate = selectedDate ?? DateTime.now();
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+    if (pickedDate != null && pickedDate != initialDate) {
+      setState(() {
+        selectedDate = pickedDate;
+      });
+    }
+  }
+
+  Future<void> _selectTime() async {
+    TimeOfDay initialTime = selectedTime ?? TimeOfDay.now();
+    TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: initialTime,
+    );
+    if (pickedTime != null && pickedTime != initialTime) {
+      setState(() {
+        selectedTime = pickedTime;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width * 0.8;
@@ -152,11 +187,18 @@ class ConfereAgendamentoState extends State<ConfereAgendamento> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Sua doação está marcada para: $appointmentDate\nLocal: $appointmentLocation',
+                    'Sua doação está marcada para: ${selectedDate?.toLocal().toString().split(' ')[0] ?? ''} ${selectedTime?.format(context) ?? ''}\nLocal: $appointmentLocation',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 20),
-                  _buildTextField('Nova Data'),
+                  ElevatedButton(
+                    onPressed: _selectDate,
+                    child: Text('Selecionar Nova Data'),
+                  ),
+                  ElevatedButton(
+                    onPressed: _selectTime,
+                    child: Text('Selecionar Novo Horário'),
+                  ),
                   _buildTextField('Novo Local'),
                   const SizedBox(height: 20),
                   Row(
@@ -164,13 +206,20 @@ class ConfereAgendamentoState extends State<ConfereAgendamento> {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          // Função para trocar a data e local
-                          _updateAppointment('Nova data', 'Novo local');
+                          if (selectedDate != null && selectedTime != null) {
+                            _updateAppointment(
+                              selectedDate!,
+                              selectedTime!,
+                              appointmentLocation,
+                            );
+                          } else {
+                            _showMessage('Por favor, selecione uma data e uma hora.', false);
+                          }
                         },
-                        child: const Text('Trocar a data'),
+                        child: const Text('Trocar'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color.fromARGB(255, 81, 177, 84),
-                          foregroundColor: Colors.white, // Cor do texto do botão
+                          foregroundColor: Colors.white,
                         ),
                       ),
                       ElevatedButton(
@@ -178,7 +227,7 @@ class ConfereAgendamentoState extends State<ConfereAgendamento> {
                         child: const Text('Desmarcar'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
-                          foregroundColor: Colors.white, // Cor do texto do botão
+                          foregroundColor: Colors.white,
                         ),
                       ),
                     ],
@@ -196,6 +245,11 @@ class ConfereAgendamentoState extends State<ConfereAgendamento> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: TextField(
+        onChanged: (value) {
+          setState(() {
+            appointmentLocation = value;
+          });
+        },
         decoration: InputDecoration(
           labelText: label,
           border: const OutlineInputBorder(),

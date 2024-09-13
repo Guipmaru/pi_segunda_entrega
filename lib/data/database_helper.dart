@@ -213,12 +213,13 @@ class DatabaseHelper {
     );
   }
     // Função para atualizar o agendamento
-  Future<int> updateAgendamento(int userId, String newDate, String newLocation) async {
+  Future<int> updateAgendamento(int userId, String newDate, String newTime , String newLocation) async {
     final db = await database;
     return await db.update(
       'agendamentos',
       {
         'data': newDate,
+        'hora': newTime,
         'local': newLocation,
       },
       where: 'user_id = ?',
