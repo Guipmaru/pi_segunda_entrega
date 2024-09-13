@@ -62,14 +62,14 @@ class _LoginScreenState extends State<LoginScreen> {
             width: 200,
             height: 200,
           ),
-          const Text(
+          /*const Text(
             'Login',
             style: TextStyle(
-              fontSize: 25,
+              fontSize: 12,
               color: Colors.black,
               fontWeight: FontWeight.bold,
             ),
-          ),
+          ),*/
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 30),
             child: Form(

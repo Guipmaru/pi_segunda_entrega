@@ -178,6 +178,13 @@ class DatabaseHelper {
     );
   }
 
+  // Função para buscar todas as cidades com hemocentros
+  Future<List<String>> getCidadesComHemocentros() async {
+    final db = await database;
+    List<Map<String, dynamic>> res = await db.rawQuery('SELECT DISTINCT cidade FROM hemocentros');
+    return res.map((row) => row['cidade'] as String).toList();
+  }
+
   // Função para inserir um agendamento
   Future<int> insertAgendamento(int userId, String data, String hora, String local) async {
     final db = await database;
