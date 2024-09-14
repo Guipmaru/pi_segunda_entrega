@@ -1,279 +1,278 @@
 import 'package:flutter/material.dart';
-import 'package:pi_segunda_entrega/controllers/user_controller.dart';
 import 'package:pi_segunda_entrega/data/database_helper.dart';
-import 'package:pi_segunda_entrega/views/home/homepage.dart';
 
-class ConfereAgendamento extends StatefulWidget {
-  const ConfereAgendamento({super.key});
-
+class LocalDoacaoPage extends StatefulWidget {
   @override
-  ConfereAgendamentoState createState() => ConfereAgendamentoState();
+  _LocalDoacaoPageState createState() => _LocalDoacaoPageState();
 }
 
-class ConfereAgendamentoState extends State<ConfereAgendamento> {
-  DateTime? selectedDate;
-  TimeOfDay? selectedTime;
-  String appointmentLocation = '';
-  final UserController _userController = UserController();
-  final DatabaseHelper _databaseHelper = DatabaseHelper();
-
+class _LocalDoacaoPageState extends State<LocalDoacaoPage> {
+  DatabaseHelper _dbHelper = DatabaseHelper();
+  Map<String, dynamic>? _usuarioLogado;
+  Map<String, dynamic>? _perfilUsuario;
+  Map<String, dynamic>? _agendamento;
+  String _mensagemErro = '';
+  List<Map<String, dynamic>> _hemocentrosCidadeSelecionada = [];
+  String _cidadeSelecionada = '';
+  
   @override
   void initState() {
     super.initState();
-    _loadAppointmentData();
+    _carregarDados();
   }
 
-  Future<void> _loadAppointmentData() async {
-    var user = await _userController.getUsuarioLogado();
-    if (user != null) {
-      var nextAppointment = await _databaseHelper.getAgendamento(user.id);
-      if (nextAppointment != null) {
+  Future<void> _carregarDados() async {
+    try {
+      Map<String, dynamic>? usuario = await _dbHelper.getUsuarioLogado();
+      if (usuario == null) {
         setState(() {
-          selectedDate = DateTime.parse(nextAppointment['data']);
-          selectedTime = TimeOfDay.fromDateTime(DateTime.parse(nextAppointment['hora']));
-          appointmentLocation = nextAppointment['local'];
+          _mensagemErro = "Nenhum usuário logado.";
         });
-      } else {
-        _showNoAppointmentMessage();
+        return;
       }
-    }
-  }
 
-  Future<void> _updateAppointment(DateTime newDate, TimeOfDay newTime, String newLocation) async {
-    if (newLocation.isEmpty) {
-      _showMessage('Por favor, informe o novo local.', false);
-      return;
-    }
+      Map<String, dynamic>? perfil = await _dbHelper.getUserProfile(usuario['id']);
+      if (perfil == null || perfil['cidade'] == null) {
+        setState(() {
+          _mensagemErro = "Complete seu cadastro.";
+        });
+        return;
+      }
 
-    var user = await _userController.getUsuarioLogado();
-    if (user != null) {
-      await _databaseHelper.updateAgendamento(
-        user.id,
-        newDate.toIso8601String().split('T')[0], // Formata a data no formato YYYY-MM-DD
-        newTime.format(context), // Formata a hora no formato HH:mm
-        newLocation,
-      );
-      _showMessage('Seu agendamento foi alterado com sucesso!', true);
-    }
-  }
+      List<Map<String, dynamic>> hemocentros = await _dbHelper.getHemocentrosByCidade(perfil['cidade']);
+      Map<String, dynamic>? agendamento = await _dbHelper.getAgendamento(usuario['id']);
 
-  Future<void> _cancelAppointment() async {
-    var user = await _userController.getUsuarioLogado();
-    if (user != null) {
-      await _databaseHelper.deleteAgendamento(user.id);
-      _showMessage('Seu agendamento foi cancelado!', true);
-    }
-  }
-
-  void _showMessage(String message, bool redirectToHome) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                if (redirectToHome) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Homepage()),
-                  );
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showNoAppointmentMessage() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: const Text('Nenhum agendamento encontrado.'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Homepage()),
-                );
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _confirmCancel() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: const Text('Tem certeza que deseja cancelar seu agendamento?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Não'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Sim'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _cancelAppointment();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> _selectDate() async {
-    DateTime initialDate = selectedDate ?? DateTime.now();
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: initialDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
-    if (pickedDate != null && pickedDate != initialDate) {
       setState(() {
-        selectedDate = pickedDate;
+        _usuarioLogado = usuario;
+        _perfilUsuario = perfil;
+        _agendamento = agendamento;
+        _hemocentrosCidadeSelecionada = hemocentros;
+      });
+    } catch (e) {
+      setState(() {
+        _mensagemErro = "Erro ao carregar os dados: $e";
       });
     }
   }
 
-  Future<void> _selectTime() async {
-    TimeOfDay initialTime = selectedTime ?? TimeOfDay.now();
-    TimeOfDay? pickedTime = await showTimePicker(
+  Future<void> _mostrarLocalizacao(BuildContext context, String endereco) async {
+    return showDialog<void>(
       context: context,
-      initialTime: initialTime,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Localização do Hemocentro'),
+          content: Text(endereco),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                'OK',
+                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color.fromARGB(255, 16, 27, 133),
+                                  fontWeight: FontWeight.bold
+                                ),
+                                ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
-    if (pickedTime != null && pickedTime != initialTime) {
+  }
+
+  Future<void> _buscarHemocentros(String cidade) async {
+    try {
+      List<Map<String, dynamic>> hemocentros = await _dbHelper.getHemocentrosByCidade(cidade);
       setState(() {
-        selectedTime = pickedTime;
+        _hemocentrosCidadeSelecionada = hemocentros;
       });
+
+      if (hemocentros.isNotEmpty) {
+        String listaHemocentros = hemocentros.map((h) => h['nome']).join(', ');
+        _mostrarResultadoBusca(context, listaHemocentros);
+      } else {
+        _mostrarResultadoBusca(context, 'Nenhum hemocentro encontrado.');
+      }
+    } catch (e) {
+      setState(() {
+        _mensagemErro = "Erro ao buscar hemocentros: $e";
+      });
+    }
+  }
+
+  Future<void> _mostrarResultadoBusca(BuildContext context, String resultado) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Resultado da Busca'),
+          content: Text(resultado),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                'OK',
+                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color.fromARGB(255, 16, 27, 133),
+                                  fontWeight: FontWeight.bold
+                                ),
+                                ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<List<String>> _carregarCidadesHemocentros() async {
+    try {
+      List<String> cidades = await _dbHelper.getCidadesComHemocentros();
+      return cidades;
+    } catch (e) {
+      setState(() {
+        _mensagemErro = "Erro ao carregar cidades: $e";
+      });
+      return [];
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width * 0.8;
-
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 238, 159, 155),
       appBar: AppBar(
-        title: const Text('Trocar ou Cancelar Agendamento'),
         backgroundColor: const Color.fromARGB(255, 212, 14, 14),
+        title: Text('Local de Doação'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: screenWidth,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Sua doação será marcada para: ${selectedDate?.toLocal().toString().split(' ')[0] ?? ''} ${selectedTime?.format(context) ?? ''}\nLocal: $appointmentLocation',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _selectDate,
-                    child: const Text(
-                      'Selecionar Nova Data',
-                      style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color.fromARGB(255, 16, 27, 133),
-                                  fontWeight: FontWeight.bold
+      body: Center( //Centraliza tudo
+        child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: _mensagemErro.isNotEmpty
+              ? Center(child: Text(_mensagemErro, style: TextStyle(color: Colors.black)))
+              : _perfilUsuario != null
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center, // Centraliza os elementos verticalmente
+                      crossAxisAlignment: CrossAxisAlignment.center, // Centraliza os elementos horizontalmente
+                      children: [
+                        // Primeira caixa branca
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 5)],
+                          ),
+                          padding: EdgeInsets.all(16),
+                          margin: EdgeInsets.only(bottom: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "${_usuarioLogado?['first_name']} ${_usuarioLogado?['last_name']}",
+                                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                "${_perfilUsuario?['cidade']}",
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              SizedBox(height: 20),
+                              Text(
+                                "Este é o seu ponto de doação",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 10),
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                color: Colors.green[300],
+                                child: Text(
+                                  _hemocentrosCidadeSelecionada.isNotEmpty
+                                      ? _hemocentrosCidadeSelecionada.first['nome'] // Exibe o nome do hemocentro
+                                      : "Nenhum hemocentro disponível",
+                                  style: TextStyle(color: Colors.white),
                                 ),
-                                ),
-                  ),
-                  ElevatedButton(
-                    onPressed: _selectTime,
-                    child: const Text(
-                      'Selecionar Novo Horário',
-                      style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color.fromARGB(255, 16, 27, 133),
-                                  fontWeight: FontWeight.bold
-                                ),
-                                ),
-                  ),
-                  _buildTextField('Novo Local'),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          if (selectedDate != null && selectedTime != null && appointmentLocation.isNotEmpty) {
-                            _updateAppointment(
-                              selectedDate!,
-                              selectedTime!,
-                              appointmentLocation,
-                            );
-                          } else {
-                            _showMessage('Por favor, selecione uma data, hora e local.', false);
-                          }
-                        },
-                        child: const Text('Trocar'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 81, 177, 84),
-                          foregroundColor: Colors.white,
+                              ),
+                              SizedBox(height: 10),
+                              ElevatedButton(
+                                onPressed: _hemocentrosCidadeSelecionada.isNotEmpty
+                                    ? () {
+                                        _mostrarLocalizacao(context, _hemocentrosCidadeSelecionada.first['endereco']);
+                                      }
+                                    : null,
+                                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                                child: Text("Ver Localização", style: TextStyle(color: Colors.white)),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      ElevatedButton(
-                        onPressed: _confirmCancel,
-                        child: const Text('Desmarcar'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          foregroundColor: Colors.white,
+                        // Segunda caixa branca
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 5)],
+                          ),
+                          padding: EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Buscar outros pontos de doação",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              FutureBuilder<List<String>>(
+                                future: _carregarCidadesHemocentros(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return Text('Erro ao carregar cidades');
+                                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                    return Text('Nenhuma cidade encontrada');
+                                  } else {
+                                    return DropdownButton<String>(
+                                      hint: Text("Selecione outra cidade"),
+                                      value: _cidadeSelecionada.isEmpty ? null : _cidadeSelecionada,
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          _cidadeSelecionada = newValue!;
+                                        });
+                                      },
+                                      items: snapshot.data!
+                                          .map<DropdownMenuItem<String>>((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                    );
+                                  }
+                                },
+                              ),
+                              SizedBox(height: 10),
+                              ElevatedButton(
+                                onPressed: _cidadeSelecionada.isNotEmpty
+                                    ? () {
+                                        _buscarHemocentros(_cidadeSelecionada);
+                                      }
+                                    : null,
+                                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                                child: Text("Buscar", style: TextStyle(color: Colors.white)),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
+                      ],
+                    )
+                  : Center(child: CircularProgressIndicator()),
         ),
       ),
-    );
-  }
-
-  Widget _buildTextField(String label) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: TextField(
-        onChanged: (value) {
-          setState(() {
-            appointmentLocation = value;
-          });
-        },
-        decoration: InputDecoration(
-          labelText: label,
-          border: const OutlineInputBorder(),
-        ),
-      ),
-    );
+    ));
   }
 }
