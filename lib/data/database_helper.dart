@@ -96,6 +96,150 @@ class DatabaseHelper {
           'endereco': 'R. Frei Caneca, 8 - Centro, Rio de Janeiro - RJ, 20211-030',
         });
 
+        await db.insert('hemocentros', {
+          'nome': 'HemoRGS',
+          'cidade': 'Porto Alegre',
+          'endereco': 'Av. Bento Gonçalves, nº 3722 - Partenon, Porto Alegre - RS, 90650-001 ',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'FHEMERON',
+          'cidade': 'Porto Velho',
+          'endereco': ' Rua Benedito de Souza Brito, s/nº - Setor Industrial, Porto Velho - RO, 76.821-080 ',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMORAIMA',
+          'cidade': 'Boa Vista',
+          'endereco': 'Av. Brigadeiro Eduardo Gomes, 3418 - Campos do Paricarana, Boa Vista - RR, 69.310-005',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMOACRE',
+          'cidade': 'Rio Branco',
+          'endereco': 'Av. Getúlio Vargas, nº 2787 - Bosque, Rio Branco - AC, 69.900-607',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMOAP',
+          'cidade': 'Macapá',
+          'endereco': 'Av. Raimundo Álvares da Costa, s/nº - Centro, Macapá - AP, 68908-170',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMOTO',
+          'cidade': 'Palmas',
+          'endereco': ' Qd. 301 Norte, conj.02, Lt. 01, Palmas - TO, 77.001-214',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMOES',
+          'cidade': 'Vitória',
+          'endereco': ' Av. Marechal Campos,1468 - Maruípe, Vitória - ES, 29047-105',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMOMINAS',
+          'cidade': 'Belo Horizonte',
+          'endereco': 'Rua Grão Para, 882 - Santa Efigênia, Belo Horizonte - MG, 30150-341',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMEPAR',
+          'cidade': 'Curitiba',
+          'endereco': 'Travessa Joao Prosdocimo,145 - Alto da XV, Curitiba - PR, 80.045-145',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMOSC',
+          'cidade': 'Florianópolis',
+          'endereco': 'Av. Othon Gama D’Eça, 756 - Praça D. Pedro I - Centro, Florianópolis - SC, 88015-240',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMOBA',
+          'cidade': 'Salvador',
+          'endereco': 'Ladeira do Hospital Geral, s/n - 2º andar - Brotas, Salvador - BA, 40286-240',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMOAL',
+          'cidade': 'Maceió',
+          'endereco': ' Av. Jorge de Lima, nº 58 - Trapiche da Barra, Maceió - AL, 57010-300',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMOSE',
+          'cidade': 'Aracaju  ',
+          'endereco': ' Av. Tancredo Neves, s/nº - Capuxo, Aracaju - SE,  49080-470',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMOÍBA',
+          'cidade': 'João Pessoa',
+          'endereco': 'Av. D. Pedro II, 1119 - Centro, João Pessoa - PB,  58013-420',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMOMAR',
+          'cidade': 'São Luis',
+          'endereco': 'Rua 5 de Janeiro, s/nº - Jordoá - MA,  65040-450',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMONORTE',
+          'cidade': 'Natal',
+          'endereco': 'Av. Alexandrino de Alencar, 1.800 - Tirol, Natal - RN,  59015-350',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMOPI',
+          'cidade': 'Teresina',
+          'endereco': 'Rua 1º de Maio, 235 - Centro/Sul, Teresina - PI,  64.001-430 ',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMOPE',
+          'cidade': 'Recife',
+          'endereco': 'Av. Ruy Barbosa, 375 - Graças, Recife - PE,  52011-040 ',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMOCE',
+          'cidade': 'Fortaleza',
+          'endereco': 'Av. José Bastos, 3.390 - Rodolfo Teófilo, Fortaleza - CE, 60.431-086 ',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'Fundação Hemocentro de Brasília - FHB',
+          'cidade': 'Brasília',
+          'endereco': 'MHN Quadra 03 Conj. A bloco 3, Brasília - DF, 70710-100 ',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMOGO',
+          'cidade': 'Goiânia',
+          'endereco': 'Av. Anhanguera 5.195 - Setor Coimbra, Goiânia - GO, 74.535-010 ',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'MT-Hemocentro',
+          'cidade': 'Cuiabá',
+          'endereco': 'Rua 13 de junho nº 1055 - Porto, Cuiabá - MT, 78020- 000 ',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMOSUL',
+          'cidade': ' Campo Grande',
+          'endereco': 'Av. Fernando Correa da Costa, nº 1304 - Centro, Campo Grande - MS, 79004-310',
+        });
+
+        await db.insert('hemocentros', {
+          'nome': 'HEMOAM',
+          'cidade': 'Manaus',
+          'endereco': 'Endereço: AV. Constantino Neri, Nº 4.397 - Chapada, Manaus - AM, 69.050-001',
+        });
+
         // Criação da tabela de agendamentos com a coluna local
         await db.execute(
           '''

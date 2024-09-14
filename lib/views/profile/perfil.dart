@@ -22,9 +22,10 @@ class _TelaPerfilState extends State<TelaPerfil> {
   final TextEditingController _cpfController = TextEditingController();
   final TextEditingController _carteiraDoadorController = TextEditingController();
   final TextEditingController _telefoneController = TextEditingController();
-  final TextEditingController _tipoSanguineoController = TextEditingController();
   final TextEditingController _deficienciaController = TextEditingController();
   final TextEditingController _doencaController = TextEditingController();
+  String? _selectedTipoSanguineo;
+
 
   @override
   void initState() {
@@ -47,9 +48,18 @@ class _TelaPerfilState extends State<TelaPerfil> {
         _cpfController.text = profile['cpf'] ?? '';
         _carteiraDoadorController.text = profile['carteira_doador'] ?? '';
         _telefoneController.text = profile['telefone'] ?? '';
-        _tipoSanguineoController.text = profile['tipo_sanguineo'] ?? '';
         _deficienciaController.text = profile['deficiencia'] ?? '';
         _doencaController.text = profile['doenca'] ?? '';
+        
+        // Verifica se o tipo sanguíneo está na lista de valores permitidos
+        String? tipoSanguineo = profile['tipo_sanguineo'];
+        if (['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].contains(tipoSanguineo)) {
+          _selectedTipoSanguineo = tipoSanguineo;
+        } else {
+          _selectedTipoSanguineo = null;  
+        }
+
+        setState(() {}); 
       }
     }
   }
@@ -65,7 +75,7 @@ class _TelaPerfilState extends State<TelaPerfil> {
         'cpf': _cpfController.text,
         'carteira_doador': _carteiraDoadorController.text,
         'telefone': _telefoneController.text,
-        'tipo_sanguineo': _tipoSanguineoController.text,
+        'tipo_sanguineo': _selectedTipoSanguineo, // Salvar tipo sanguíneo selecionado
         'deficiencia': _deficienciaController.text,
         'doenca': _doencaController.text,
       });
@@ -218,12 +228,27 @@ class _TelaPerfilState extends State<TelaPerfil> {
               const SizedBox(height: 10),
 
               // Primeira linha: Tipo Sanguíneo, Deficiência
-              Row(
+               Row(
                 children: [
                   Expanded(
-                    child: TextFormField(
-                      controller: _tipoSanguineoController,
+                    child: DropdownButtonFormField<String>(
+                      value: _selectedTipoSanguineo,
                       decoration: const InputDecoration(labelText: 'Tipo Sanguíneo'),
+                      items: const [
+                        DropdownMenuItem(value: 'A+', child: Text('A+')),
+                        DropdownMenuItem(value: 'A-', child: Text('A-')),
+                        DropdownMenuItem(value: 'B+', child: Text('B+')),
+                        DropdownMenuItem(value: 'B-', child: Text('B-')),
+                        DropdownMenuItem(value: 'AB+', child: Text('AB+')),
+                        DropdownMenuItem(value: 'AB-', child: Text('AB-')),
+                        DropdownMenuItem(value: 'O+', child: Text('O+')),
+                        DropdownMenuItem(value: 'O-', child: Text('O-')),
+                      ],
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _selectedTipoSanguineo = newValue;
+                        });
+                      },
                     ),
                   ),
                   const SizedBox(width: 10),

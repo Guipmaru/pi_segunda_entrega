@@ -47,7 +47,7 @@ class ConfereAgendamentoState extends State<ConfereAgendamento> {
 
     // Formata a data no formato DD-MM-YYYY
     String formattedDate = '${newDate.day.toString().padLeft(2, '0')}-${newDate.month.toString().padLeft(2, '0')}-${newDate.year}';
-    print('Data selecionada: $formattedDate'); // Verifica a data no console
+    //print('Data selecionada: $formattedDate'); // Verifica a data no console
 
     var user = await _userController.getUsuarioLogado();
     if (user != null) {
