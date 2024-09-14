@@ -1,303 +1,199 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:pi_segunda_entrega/data/database_helper.dart';
+import 'package:pi_segunda_entrega/controllers/user_controller.dart';
 import 'package:pi_segunda_entrega/views/home/homepage.dart';
+import 'package:pi_segunda_entrega/views/auth/cadastro_user.dart'; 
+import 'package:pi_segunda_entrega/views/auth/esqueceu_senha.dart';
 
-class AgendamentoScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
-  _AgendamentoScreenState createState() => _AgendamentoScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _AgendamentoScreenState extends State<AgendamentoScreen> {
+class _LoginScreenState extends State<LoginScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final _heightController = TextEditingController();
-  final _weightController = TextEditingController();
-  final _illnessController = TextEditingController();
-  final _tattoosController = TextEditingController();
-  final _surgeryController = TextEditingController();
-  DateTime? _selectedDate;
-  TimeOfDay? _selectedTime;
-  final _locationController = TextEditingController();
-  final _databaseHelper = DatabaseHelper();
-  String? _userName;
+  String _errorMessage = '';
 
-  @override
-  void initState() {
-    super.initState();
-    _getUserInfo();
-    _checkExistingAppointment();
-  }
+  final UserController _userController = UserController();
 
-  Future<void> _getUserInfo() async {
-    final user = await _databaseHelper.getUsuarioLogado();
-    if (user != null) {
-      setState(() {
-        _userName = '${user['first_name']} ${user['last_name']}';
-      });
-    }
-  }
+  Future<void> _login() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
 
-  Future<void> _checkExistingAppointment() async {
-    final user = await _databaseHelper.getUsuarioLogado();
-    if (user != null) {
-      final appointments = await _databaseHelper.getAgendamentosByUser(user['id']);
-      if (appointments.isNotEmpty) {
-        _showMessage('Você já possui um agendamento marcado, caso queira alterar a data ou cancelar, utilize a tela de troca e cancelamento na página inicial');
-      }
-    }
-  }
+    if (_formKey.currentState!.validate()) {
+      var user = await _userController.getUser(email, password);
 
-  Future<void> _selectDate() async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(Duration(days: 365)),
-    );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
-    }
-  }
+      if (!mounted) return;
 
-  Future<void> _selectTime() async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-    if (picked != null && picked != _selectedTime) {
-      setState(() {
-        _selectedTime = picked;
-      });
-    }
-  }
-
-  Future<void> _confirmAppointment() async {
-    if (_formKey.currentState?.validate() ?? false) {
-      final user = await _databaseHelper.getUsuarioLogado();
       if (user != null) {
-        final illness = _illnessController.text.trim().toLowerCase();
-        if (illness.contains('sim')) {
-          _showMessage('Não é possível agendar nesse momento pois você ficou doente recentemente');
-          return;
-        }
-        final date = DateFormat('dd-MM-yyyy').format(_selectedDate!);
-        final time = _selectedTime?.format(context) ?? '';
-        final location = _locationController.text.trim();
-
-        await _databaseHelper.insertAgendamento(user['id'], date, time, location);
-        _showConfirmationDialog();
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const Homepage()),
+        );
+      } else {
+        setState(() {
+          _errorMessage = 'Usuário ou senha incorretos';
+        });
       }
     }
   }
 
-  Future<void> _showConfirmationDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Agendamento Confirmado'),
-          content: Text('Seu agendamento foi confirmado, você será redirecionado para a página inicial'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Fecha o diálogo de confirmação
-                Navigator.of(context).pushNamedAndRemoveUntil('/homepage', (route) => false); // Redireciona para a Homepage
-              },
-            ),
-          ],
-        );
-      },
-    );
+  void _clearError() {
+    setState(() {
+      _errorMessage = '';
+      _emailController.clear();
+      _passwordController.clear();
+    });
   }
-
-  Future<void> _showMessage(String message) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Aviso'),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Fecha o diálogo
-                Navigator.of(context).pushNamedAndRemoveUntil('/homepage', (route) => false); // Redireciona para a Homepage
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  @override
+  
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 81, 177, 84),
-        title: Text('Agendamento de Doação'),
+        title: const Text ('Login'),
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 212, 14, 14),
       ),
-      resizeToAvoidBottomInset: true, 
+      backgroundColor: const Color.fromARGB(255, 238, 159, 155),
       body: Container(
-        color: const Color.fromARGB(255, 190, 228, 191),
-        padding: const EdgeInsets.all(16.0),
+        child:SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (_userName != null)
-              Text(
-                'Bem-vindo, $_userName!',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            SizedBox(height: 16.0),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: _heightController,
-                                    decoration: InputDecoration(
-                                      labelText: 'Altura',
-                                      labelStyle: TextStyle(fontSize: 14), // Tamanho do título do campo
-                                    ),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Campo obrigatório';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                                SizedBox(width: 16.0),
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: _weightController,
-                                    decoration: InputDecoration(
-                                      labelText: 'Peso',
-                                      labelStyle: TextStyle(fontSize: 14), // Tamanho do título do campo
-                                    ),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Campo obrigatório';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                              ],
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Adicionando uma imagem
+          Image.asset('lib/assets/images/logotipo-semfundo.png',
+            width: 300 ,
+            height: 300,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 30),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    child: TextFormField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        hintText: 'Digite seu Email',
+                        prefixIcon: Icon(Icons.email),
+                        border: OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor, insira o email';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    child: TextFormField(
+                      controller: _passwordController,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Senha',
+                        hintText: 'Digite sua senha',
+                        prefixIcon: Icon(Icons.password),
+                        border: OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor, insira a senha';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  if (_errorMessage.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Column(
+                        children: [
+                          Text(
+                            _errorMessage,
+                            style: const TextStyle(color: Colors.black, fontSize: 16),
+                          ),
+                          ElevatedButton(
+                            onPressed: _clearError,
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 100),
+                    child: MaterialButton(
+                      minWidth: double.infinity,
+                      onPressed: _login,
+                      color: const Color.fromARGB(255, 212, 14, 14),
+                      textColor: Colors.white,
+                      child: const Text('Entrar'),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const EsqueceuSenha(),
                             ),
-                            SizedBox(height: 16.0),
-                            TextFormField(
-                              controller: _illnessController,
-                              decoration: InputDecoration(
-                                labelText: 'Ficou doente recentemente? (Sim ou Não)',
-                                labelStyle: TextStyle(fontSize: 14), // Tamanho do título do campo
-                              ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Campo obrigatório';
-                                }
-                                return null;
-                              },
+                          );
+                        },
+                        child: const Text(
+                          'Esqueceu sua senha?',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 16, 27, 133),
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
                             ),
-                            SizedBox(height: 16.0),
-                            TextFormField(
-                              controller: _tattoosController,
-                              decoration: InputDecoration(
-                                labelText: 'Possui tatuagens? (Sim ou Não)',
-                                labelStyle: TextStyle(fontSize: 14), // Tamanho do título do campo
-                              ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Campo obrigatório';
-                                }
-                                return null;
-                              },
+                          ),
+                      ),
+                      const SizedBox(width: 10),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const CadastroUser(),
                             ),
-                            SizedBox(height: 16.0),
-                            TextFormField(
-                              controller: _surgeryController,
-                              decoration: InputDecoration(
-                                labelText: 'Fez alguma cirurgia no último ano? Se sim, qual?',
-                                labelStyle: TextStyle(fontSize: 14), // Tamanho do título do campo
-                              ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Campo obrigatório';
-                                }
-                                return null;
-                              },
+                          );
+                        },
+                        child: const Text(
+                          'Cadastre-se',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 16, 27, 133),
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
                             ),
-                            SizedBox(height: 16.0),
-                            TextButton(
-                              onPressed: _selectDate,
-                              child: Text(
-                                _selectedDate == null
-                                    ? 'Selecionar Data'
-                                    : 'Data Selecionada: ${DateFormat('yyyy-MM-dd').format(_selectedDate!)}',
-                                style: TextStyle(fontSize: 14), // Tamanho do texto do botão
-                              ),
-                            ),
-                            SizedBox(height: 16.0),
-                            TextButton(
-                              onPressed: _selectTime,
-                              child: Text(
-                                _selectedTime == null
-                                    ? 'Selecionar Hora'
-                                    : 'Hora Selecionada: ${_selectedTime?.format(context)}',
-                                style: TextStyle(fontSize: 14), // Tamanho do texto do botão
-                              ),
-                            ),
-                            SizedBox(height: 16.0),
-                            TextFormField(
-                              controller: _locationController,
-                              decoration: InputDecoration(
-                                labelText: 'Local de Doação',
-                                labelStyle: TextStyle(fontSize: 14), // Tamanho do título do campo
-                              ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Campo obrigatório';
-                                }
-                                return null;
-                              },
-                            ),
-                            SizedBox(height: 16.0),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: Size(200, 50), // Tamanho do botão
-                                backgroundColor: Colors.green, // Cor de fundo do botão
-                                foregroundColor: Colors.white, // Cor do texto do botão
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10), // Bordas arredondadas
-                                ),
-                              ),
-                              onPressed: _confirmAppointment,
-                              child: Text(
-                                'Confirmar Agendamento',
-                                style: TextStyle(fontSize: 16), // Tamanho do texto do botão
-                              ),
-                            ),
-                          ],
-                        )
-                ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
+      ),
       ),
     );
   }
