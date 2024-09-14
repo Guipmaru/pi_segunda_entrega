@@ -41,15 +41,15 @@ class HomepageState extends State<Homepage> {
       if (nextAppointment != null) {
         setState(() {
           try {
-            // Parse the date using DateFormat
+            // formato da data dia/mês/ano
             DateFormat inputFormat = DateFormat('dd-MM-yyyy');
             DateTime dateTime = inputFormat.parse(nextAppointment['data']);
             
-            // Format the date for display
             DateFormat outputFormat = DateFormat('dd-MM-yyyy');
             String formattedDate = outputFormat.format(dateTime);
             
-            nextDonationDate = 'Próxima doação prevista: $formattedDate ${nextAppointment['hora']}';
+            // Incluindo o local no texto
+            nextDonationDate = 'Próxima doação prevista: $formattedDate às ${nextAppointment['hora']} no local: ${nextAppointment['local']}';
           } catch (e) {
             print('Error parsing date: $e');
             nextDonationDate = 'Erro ao formatar a data do agendamento';
