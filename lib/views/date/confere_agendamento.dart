@@ -45,15 +45,11 @@ class ConfereAgendamentoState extends State<ConfereAgendamento> {
       return;
     }
 
-    // Formata a data no formato DD-MM-YYYY
-    String formattedDate = '${newDate.day.toString().padLeft(2, '0')}-${newDate.month.toString().padLeft(2, '0')}-${newDate.year}';
-    //print('Data selecionada: $formattedDate'); // Verifica a data no console
-
     var user = await _userController.getUsuarioLogado();
     if (user != null) {
       await _databaseHelper.updateAgendamento(
         user.id,
-        formattedDate, // Usa a data formatada no padrão DD-MM-YYYY
+        newDate.toIso8601String().split('T')[0], // Formata a data no formato YYYY-MM-DD
         newTime.format(context), // Formata a hora no formato HH:mm
         newLocation,
       );
@@ -176,10 +172,10 @@ class ConfereAgendamentoState extends State<ConfereAgendamento> {
     double screenWidth = MediaQuery.of(context).size.width * 0.8;
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 190, 228, 191),
+      backgroundColor: const Color.fromARGB(255, 238, 159, 155),
       appBar: AppBar(
         title: const Text('Trocar ou Cancelar Agendamento'),
-        backgroundColor: const Color.fromARGB(255, 81, 177, 84),
+        backgroundColor: const Color.fromARGB(255, 212, 14, 14),
       ),
       body: Center(
         child: Column(
@@ -202,11 +198,25 @@ class ConfereAgendamentoState extends State<ConfereAgendamento> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _selectDate,
-                    child: const Text('Selecionar Nova Data'),
+                    child: const Text(
+                      'Selecionar Nova Data',
+                      style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color.fromARGB(255, 16, 27, 133),
+                                  fontWeight: FontWeight.bold
+                                ),
+                                ),
                   ),
                   ElevatedButton(
                     onPressed: _selectTime,
-                    child: const Text('Selecionar Novo Horário'),
+                    child: const Text(
+                      'Selecionar Novo Horário',
+                      style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color.fromARGB(255, 16, 27, 133),
+                                  fontWeight: FontWeight.bold
+                                ),
+                                ),
                   ),
                   _buildTextField('Novo Local'),
                   const SizedBox(height: 20),
