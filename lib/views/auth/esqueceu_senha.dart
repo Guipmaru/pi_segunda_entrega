@@ -34,10 +34,10 @@ class _ForgotPasswordScreenState extends State<EsqueceuSenha> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 208, 241, 209),
+      backgroundColor: const Color.fromARGB(255, 238, 159, 155),
       appBar: AppBar(
         title: const Text('Esqueceu sua senha?'),
-        backgroundColor: const Color.fromARGB(255, 81, 177, 84),
+        backgroundColor: const Color.fromARGB(255, 212, 14, 14),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -70,7 +70,7 @@ class _ForgotPasswordScreenState extends State<EsqueceuSenha> {
             const SizedBox(height: 20),
             MaterialButton(
               minWidth: double.infinity,
-              color: const Color.fromARGB(255, 81, 177, 84),
+              color: const Color.fromARGB(255, 212, 14, 14),
               textColor: Colors.white,
               child: const Text('Confirmar'),
               onPressed: () {
