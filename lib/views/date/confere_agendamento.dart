@@ -45,11 +45,15 @@ class ConfereAgendamentoState extends State<ConfereAgendamento> {
       return;
     }
 
+    // Formata a data no formato DD-MM-YYYY
+    String formattedDate = '${newDate.day.toString().padLeft(2, '0')}-${newDate.month.toString().padLeft(2, '0')}-${newDate.year}';
+    print('Data selecionada: $formattedDate'); // Verifica a data no console
+
     var user = await _userController.getUsuarioLogado();
     if (user != null) {
       await _databaseHelper.updateAgendamento(
         user.id,
-        newDate.toIso8601String().split('T')[0], // Formata a data no formato YYYY-MM-DD
+        formattedDate, // Usa a data formatada no padrão DD-MM-YYYY
         newTime.format(context), // Formata a hora no formato HH:mm
         newLocation,
       );
