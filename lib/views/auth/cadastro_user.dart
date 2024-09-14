@@ -22,10 +22,10 @@ class CadastroUserState extends State<CadastroUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 208, 241, 209),
+      backgroundColor: const Color.fromARGB(255, 238, 159, 155),
       appBar: AppBar(
         title: const Text('Cadastre-se'),
-        backgroundColor: const Color.fromARGB(255, 81, 177, 84),
+        backgroundColor: const Color.fromARGB(255, 212, 14, 14),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -149,7 +149,7 @@ class CadastroUserState extends State<CadastroUser> {
               // Botão de Cadastrar
               MaterialButton(
                 minWidth: double.infinity,
-                color: const Color.fromARGB(255, 81, 177, 84),
+                color: const Color.fromARGB(255, 212, 14, 14),
                 textColor: Colors.white,
                 child: const Text('Cadastrar'),
                 onPressed: () async {
