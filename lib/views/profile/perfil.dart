@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:pi_segunda_entrega/data/database_helper.dart';
 import 'package:pi_segunda_entrega/views/home/homepage.dart';
 
@@ -22,10 +25,13 @@ class _TelaPerfilState extends State<TelaPerfil> {
   final TextEditingController _cpfController = TextEditingController();
   final TextEditingController _carteiraDoadorController = TextEditingController();
   final TextEditingController _telefoneController = TextEditingController();
+  final TextEditingController _tipoSanguineoController = TextEditingController();
   final TextEditingController _deficienciaController = TextEditingController();
   final TextEditingController _doencaController = TextEditingController();
   String? _selectedTipoSanguineo;
-
+  String? _selectedDeficiencia;
+  String? _selectedDoenca;
+  String? _selectedCidade;
 
   @override
   void initState() {
@@ -48,18 +54,9 @@ class _TelaPerfilState extends State<TelaPerfil> {
         _cpfController.text = profile['cpf'] ?? '';
         _carteiraDoadorController.text = profile['carteira_doador'] ?? '';
         _telefoneController.text = profile['telefone'] ?? '';
+        _tipoSanguineoController.text = profile['tipo_sanguineo'] ?? '';
         _deficienciaController.text = profile['deficiencia'] ?? '';
         _doencaController.text = profile['doenca'] ?? '';
-        
-        // Verifica se o tipo sanguíneo está na lista de valores permitidos
-        String? tipoSanguineo = profile['tipo_sanguineo'];
-        if (['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].contains(tipoSanguineo)) {
-          _selectedTipoSanguineo = tipoSanguineo;
-        } else {
-          _selectedTipoSanguineo = null;  
-        }
-
-        setState(() {}); 
       }
     }
   }
@@ -75,7 +72,7 @@ class _TelaPerfilState extends State<TelaPerfil> {
         'cpf': _cpfController.text,
         'carteira_doador': _carteiraDoadorController.text,
         'telefone': _telefoneController.text,
-        'tipo_sanguineo': _selectedTipoSanguineo, // Salvar tipo sanguíneo selecionado
+        'tipo_sanguineo': _tipoSanguineoController.text,
         'deficiencia': _deficienciaController.text,
         'doenca': _doencaController.text,
       });
@@ -111,10 +108,10 @@ class _TelaPerfilState extends State<TelaPerfil> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Perfil'),
-        backgroundColor: const Color.fromARGB(255, 208, 241, 209),
+        backgroundColor: const Color.fromARGB(255, 212, 14, 14),
       ),
       body: Container(
-        color: const Color.fromARGB(255, 208, 241, 209), // Cor de fundo verde
+        color: const Color.fromARGB(255, 255, 255, 255), // Cor de fundo
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -166,9 +163,19 @@ class _TelaPerfilState extends State<TelaPerfil> {
                   ),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: TextFormField(
-                      controller: _cidadeController,
+                    child: DropdownButtonFormField<String>(
+                      value: _selectedCidade,
                       decoration: const InputDecoration(labelText: 'Cidade'),
+                      items: [
+                        DropdownMenuItem(value: 'Campinas', child: Text('Campinas')),
+                        DropdownMenuItem(value: 'Rio de Janeiro', child: Text('Rio de Janeiro')),
+                        DropdownMenuItem(value: 'São Paulo', child: Text('São Paulo')),
+                      ],
+                      onChanged: (String? newValue){
+                        setState(() {
+                          _selectedCidade = newValue;
+                        });
+                      },
                     ),
                   ),
                 ],
@@ -206,6 +213,7 @@ class _TelaPerfilState extends State<TelaPerfil> {
                     child: TextFormField(
                       controller: _carteiraDoadorController,
                       decoration: const InputDecoration(labelText: 'Carteira de Doador'),
+                      keyboardType: TextInputType.number,
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -213,7 +221,8 @@ class _TelaPerfilState extends State<TelaPerfil> {
                     child: TextFormField(
                       controller: _telefoneController,
                       decoration: const InputDecoration(labelText: 'Telefone'),
-                      keyboardType: TextInputType.phone,
+                      keyboardType: TextInputType.number,
+                      maxLength: 11,
                     ),
                   ),
                 ],
@@ -228,7 +237,7 @@ class _TelaPerfilState extends State<TelaPerfil> {
               const SizedBox(height: 10),
 
               // Primeira linha: Tipo Sanguíneo, Deficiência
-               Row(
+              Row(
                 children: [
                   Expanded(
                     child: DropdownButtonFormField<String>(
@@ -253,19 +262,36 @@ class _TelaPerfilState extends State<TelaPerfil> {
                   ),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: TextFormField(
-                      controller: _deficienciaController,
+                    child: DropdownButtonFormField<String>(
+                      value: _selectedDeficiencia,
                       decoration: const InputDecoration(labelText: 'PCD?'),
-                    ),
-                  ),
+                      items: const[
+                        DropdownMenuItem(value: 'Sim', child: Text('Sim')),
+                        DropdownMenuItem(value: 'Não', child: Text('Não')),
+                      ], 
+                      onChanged: (String? newValue){
+                        setState((){
+                          _selectedDeficiencia = newValue;
+                        });
+                      }
+                      ),
+                      ),
                 ],
               ),
               const SizedBox(height: 10),
-
               // Segunda linha: Doença crônica
-              TextFormField(
-                controller: _doencaController,
+              DropdownButtonFormField<String>(
+                value: _selectedDoenca,
                 decoration: const InputDecoration(labelText: 'Possui doenças crônicas?'),
+                items: const[
+                        DropdownMenuItem(value: 'Sim', child: Text('Sim')),
+                        DropdownMenuItem(value: 'Não', child: Text('Não')),
+                      ], 
+                      onChanged: (String? newValue){
+                        setState((){
+                          _selectedDeficiencia = newValue;
+                        });
+                      }
               ),
               const SizedBox(height: 20),
 
@@ -273,7 +299,7 @@ class _TelaPerfilState extends State<TelaPerfil> {
               ElevatedButton(
                 onPressed: _updateUserProfile,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 0, 150, 0), // Verde mais escuro
+                  backgroundColor: const Color.fromARGB(255, 212, 14, 14), // Vermelho mais escuro
                   foregroundColor: Colors.white, // Texto branco
                 ),
                 child: const Text('Atualizar dados'),
