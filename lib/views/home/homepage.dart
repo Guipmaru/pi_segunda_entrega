@@ -7,6 +7,7 @@ import 'package:pi_segunda_entrega/views/date/confere_agendamento.dart';
 import 'package:pi_segunda_entrega/views/date/agendamento_doacao.dart'; 
 import 'package:pi_segunda_entrega/views/local/local_doacao.dart'; 
 import 'package:pi_segunda_entrega/data/database_helper.dart'; 
+import 'package:pi_segunda_entrega/views/home/homepage.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -62,9 +63,9 @@ class HomepageState extends State<Homepage> {
       }
     }
   }
-  void _logout() {
-    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-  }
+void _logout() {
+  Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+}
 
   @override
   Widget build(BuildContext context) {

@@ -189,7 +189,7 @@ class _LocalDoacaoPageState extends State<LocalDoacaoPage> {
                               SizedBox(height: 10),
                               Container(
                                 padding: EdgeInsets.all(10),
-                                color: Colors.green[300],
+                                color: const Color.fromARGB(255, 199, 129, 129),
                                 child: Text(
                                   _hemocentrosCidadeSelecionada.isNotEmpty
                                       ? _hemocentrosCidadeSelecionada.first['nome'] // Exibe o nome do hemocentro
@@ -204,7 +204,7 @@ class _LocalDoacaoPageState extends State<LocalDoacaoPage> {
                                         _mostrarLocalizacao(context, _hemocentrosCidadeSelecionada.first['endereco']);
                                       }
                                     : null,
-                                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                                style: ElevatedButton.styleFrom(backgroundColor: const Color.fromARGB(255, 175, 79, 76)),
                                 child: Text("Ver Localização", style: TextStyle(color: Colors.white)),
                               ),
                             ],
@@ -262,7 +262,7 @@ class _LocalDoacaoPageState extends State<LocalDoacaoPage> {
                                         _buscarHemocentros(_cidadeSelecionada);
                                       }
                                     : null,
-                                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                                style: ElevatedButton.styleFrom(backgroundColor: const Color.fromARGB(255, 175, 79, 76)),
                                 child: Text("Buscar", style: TextStyle(color: Colors.white)),
                               ),
                             ],

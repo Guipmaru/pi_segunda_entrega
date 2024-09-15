@@ -20,10 +20,6 @@ class _AgendamentoScreenState extends State<AgendamentoScreen> {
   final _locationController = TextEditingController();
   final _databaseHelper = DatabaseHelper();
   String? _userName;
-  String? _selectedIllness;
-  String? _selectedTattoos;
-  String? _selectedCirurgia;
-  String? _selectedLocation;
 
   @override
   void initState() {
@@ -165,7 +161,7 @@ class _AgendamentoScreenState extends State<AgendamentoScreen> {
             
             Row(
               children: [
-                Expanded(
+            Expanded(
               child: SingleChildScrollView(
                 child: Form(
                   key: _formKey,
@@ -207,54 +203,35 @@ class _AgendamentoScreenState extends State<AgendamentoScreen> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 16.0),
-
-                            Row(
-                              children: [
-                                Expanded(
-                            child: DropdownButtonFormField<String>(
-                              value: _selectedIllness,
+                            SizedBox(height: 16.0),
+                            TextFormField(
+                              controller: _illnessController,
                               decoration: InputDecoration(
-                                labelText: 'Ficou doente recentemente?',
+                                labelText: 'Ficou doente recentemente? (Sim ou Não)',
                                 labelStyle: TextStyle(fontSize: 14), // Tamanho do título do campo
                               ),
-                              items: const[
-                                DropdownMenuItem(value: 'Sim', child: Text('Sim')),
-                                DropdownMenuItem(value: 'Não', child: Text('Não')),
-                              ],
-                              onChanged: (String? newValue) {
-                               setState(() {
-                                  _selectedIllness = newValue;
-                                });
-                              }
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Campo obrigatório';
+                                }
+                                return null;
+                              },
                             ),
-                            ),
-                            ],),
-                            const SizedBox(height: 16.0),
-
-                            Row(
-                              children: [
-                                Expanded(
-                            child: DropdownButtonFormField<String>(
-                              value: _selectedTattoos,
+                            SizedBox(height: 16.0),
+                            TextFormField(
+                              controller: _tattoosController,
                               decoration: InputDecoration(
                                 labelText: 'Possui tatuagens? (Sim ou Não)',
                                 labelStyle: TextStyle(fontSize: 14), // Tamanho do título do campo
                               ),
-                              items: [
-                                DropdownMenuItem(value: 'Sim', child: Text('Sim')),
-                                DropdownMenuItem(value: 'Não', child: Text('Não')),
-                              ],
-                              onChanged: (String? newValue){
-                                setState(() {
-                                  _selectedTattoos = newValue;
-                                });
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Campo obrigatório';
+                                }
+                                return null;
                               },
                             ),
-                            ),
-                            ],
-                            ),                          
-                            const SizedBox(height: 16.0),
+                            SizedBox(height: 16.0),
                             TextFormField(
                               controller: _surgeryController,
                               decoration: InputDecoration(
@@ -268,75 +245,45 @@ class _AgendamentoScreenState extends State<AgendamentoScreen> {
                                 return null;
                               },
                             ),
-                            const SizedBox(height: 16.0),
-
-                            Row(
-                              children: [
-                              Expanded(
-                                child: TextButton(
+                            SizedBox(height: 16.0),
+                            TextButton(
                               onPressed: _selectDate,
                               child: Text(
                                 _selectedDate == null
                                     ? 'Selecionar Data'
                                     : 'Data Selecionada: ${DateFormat('yyyy-MM-dd').format(_selectedDate!)}',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color.fromARGB(255, 16, 27, 133),
-                                  fontWeight: FontWeight.bold
-                                ), // Tamanho do texto do botão
+                                style: TextStyle(fontSize: 14), // Tamanho do texto do botão
                               ),
-                            ),)
-                            ],),                           
-                            const SizedBox(height: 16.0),
-
-                            Row(
-                              children: [
-                              Expanded(child: TextButton(
+                            ),
+                            SizedBox(height: 16.0),
+                            TextButton(
                               onPressed: _selectTime,
                               child: Text(
                                 _selectedTime == null
                                     ? 'Selecionar Hora'
                                     : 'Hora Selecionada: ${_selectedTime?.format(context)}',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color.fromARGB(255, 16, 27, 133),
-                                  fontWeight: FontWeight.bold,
-                                  ), // Tamanho do texto do botão
+                                style: TextStyle(fontSize: 14), // Tamanho do texto do botão
                               ),
-                            ),)
-                            ],),
-                            const SizedBox(height: 16.0),
-
-                            Row(
-                              children: [
-                              Expanded(
-                                child: DropdownButtonFormField<String>(
-                              value: _selectedLocation,
+                            ),
+                            SizedBox(height: 16.0),
+                            TextFormField(
+                              controller: _locationController,
                               decoration: InputDecoration(
                                 labelText: 'Local de Doação',
                                 labelStyle: TextStyle(fontSize: 14), // Tamanho do título do campo
                               ),
-                              items: [
-                                DropdownMenuItem(value: 'Campinas', child: Text('Campinas')),
-                                DropdownMenuItem(value: 'Rio de Janeiro', child: Text('Rio de Janeiro')),
-                                DropdownMenuItem(value: 'São Paulo', child: Text('São Paulo')),
-                              ],
-                              onChanged: (String? newValue){
-                                setState(() {
-                                  _selectedLocation = newValue;
-                                });
-                              }
-                            ),)
-                            ],),                           
-                            const SizedBox(height: 16.0),
-
-                            Row(
-                              children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Campo obrigatório';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 16.0),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
                                 minimumSize: Size(200, 50), // Tamanho do botão
-                                backgroundColor: Color.fromARGB(255, 212, 14, 14),// Cor de fundo do botão
+                                backgroundColor: const Color.fromARGB(255, 212, 14, 14),
                                 foregroundColor: Colors.white, // Cor do texto do botão
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10), // Bordas arredondadas
@@ -347,8 +294,7 @@ class _AgendamentoScreenState extends State<AgendamentoScreen> {
                                 'Confirmar Agendamento',
                                 style: TextStyle(fontSize: 16), // Tamanho do texto do botão
                               ),
-                            ),)
-                            ],),                         
+                            ),
                           ],
                         )
                 ),
