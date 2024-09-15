@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pi_segunda_entrega/data/database_helper.dart';  
 
 class EsqueceuSenha extends StatefulWidget {
   const EsqueceuSenha({super.key});
@@ -9,6 +10,7 @@ class EsqueceuSenha extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<EsqueceuSenha> {
   final _emailController = TextEditingController();
+  final _dbHelper = DatabaseHelper();  
 
   void _showRecoveryDialog() {
     showDialog(
@@ -20,8 +22,8 @@ class _ForgotPasswordScreenState extends State<EsqueceuSenha> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Fecha o diálogo
-                Navigator.pop(context); // Volta para a tela de login
+                Navigator.pop(context);  // Fecha o diálogo
+                Navigator.pop(context);  // Volta para a tela de login
               },
               child: const Text('OK'),
             ),
@@ -29,6 +31,44 @@ class _ForgotPasswordScreenState extends State<EsqueceuSenha> {
         );
       },
     );
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Erro'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);  // Fecha o diálogo
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _confirmEmail() async {
+    String email = _emailController.text.trim();
+    
+    if (email.isEmpty) {
+      _showErrorDialog('Por favor, insira um email.');
+      return;
+    }
+
+    // Verifica se o email existe no banco de dados
+    bool emailExiste = await _dbHelper.emailExists(email);
+    
+    if (emailExiste) {
+      _showRecoveryDialog();
+    } else {
+      _showErrorDialog('O email não foi encontrado. Verifique e tente novamente.');
+    }
   }
 
   @override
@@ -60,12 +100,6 @@ class _ForgotPasswordScreenState extends State<EsqueceuSenha> {
                 filled: true,
                 fillColor: Colors.white,
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor, insira seu email';
-                }
-                return null;
-              },
             ),
             const SizedBox(height: 20),
             MaterialButton(
@@ -73,11 +107,7 @@ class _ForgotPasswordScreenState extends State<EsqueceuSenha> {
               color: const Color.fromARGB(255, 212, 14, 14),
               textColor: Colors.white,
               child: const Text('Confirmar'),
-              onPressed: () {
-                if (_emailController.text.isNotEmpty) {
-                  _showRecoveryDialog();
-                }
-              },
+              onPressed: _confirmEmail,  // Chama a função de confirmação
             ),
           ],
         ),

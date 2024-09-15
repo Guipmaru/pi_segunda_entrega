@@ -65,6 +65,7 @@ class DatabaseHelper {
           ''',
         );
 
+
         // Criação da tabela de hemocentros
         await db.execute(
           '''
@@ -278,7 +279,16 @@ class DatabaseHelper {
     );
     return res.isNotEmpty ? res.first : null;
   }
-
+  // Função para tela de esqueceu usuário
+  Future<bool> emailExists(String email) async {
+  final db = await database;
+  var res = await db.query(
+    'users',
+    where: 'email = ?',
+    whereArgs: [email],
+  );
+  return res.isNotEmpty;  // Retorna true se o email for encontrado
+  }
   // Função para buscar o último usuário logado no banco de dados
   Future<Map<String, dynamic>?> getUsuarioLogado() async {
     final db = await database;
