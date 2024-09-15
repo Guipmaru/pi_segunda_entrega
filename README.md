@@ -2,6 +2,13 @@
 
 Projeto Integrador, 4º semestre Senac EAD
 
+Integrantes:
+
+Felipe Augusto Santinho
+Guilherme Pires Maruiti
+Paola Akemi Silva 
+Rafaela Acácia Gonçalves
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
